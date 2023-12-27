@@ -1,6 +1,9 @@
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import type { GetServerSidePropsContext } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 
 export const redirectTo = (path: string) => ({
   redirect: {
@@ -16,6 +19,10 @@ export const redirectToAuth = {
   },
 };
 
+export type WithAuthType = InferGetServerSidePropsType<
+  ReturnType<typeof withAuth>
+>;
+
 export const withAuth = () => {
   return async (ctx: GetServerSidePropsContext) => {
     const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
@@ -30,7 +37,7 @@ export const withAuth = () => {
 
     return {
       props: {
-        session,
+        user: session.user,
       },
     };
   };
