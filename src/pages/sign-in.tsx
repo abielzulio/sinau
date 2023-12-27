@@ -12,7 +12,7 @@ export default function SignInPage() {
     <main className="bg-off-white flex min-h-screen items-center justify-center ">
       <div className="flex w-[300px] flex-col items-center gap-[20px] rounded-md border-[1px] border-black/10 bg-white px-[24px] py-[36px] text-center">
         <Image
-          src="/brand/sinau.svg"
+          src="/brand/sinau-black.svg"
           alt="Sinau Logo"
           className="h-[24px] w-[24px] opacity-50"
         />
