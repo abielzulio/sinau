@@ -13,7 +13,7 @@ export default function SignInPage() {
       <div className="flex w-[300px] flex-col items-center gap-[20px] rounded-md border-[1px] border-black/10 bg-white px-[24px] py-[36px] text-center">
         <Image
           src="/brand/sinau.svg"
-          alt="Google Login"
+          alt="Sinau Logo"
           className="h-[24px] w-[24px] opacity-50"
         />
         <div className="flex flex-col gap-[5px]">
