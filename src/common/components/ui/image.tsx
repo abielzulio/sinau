@@ -15,7 +15,7 @@ function Image({
 
   return (
     <div className={cn("relative h-full w-full overflow-hidden", className)}>
-      <NextImage {...props} fill className="object-contain" src={src} />
+      <NextImage {...props} fill className="object-cover" src={src} />
     </div>
   );
 }
