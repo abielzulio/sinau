@@ -35,7 +35,6 @@ const HEADERS = {
   referer: "https://duckduckgo.com/",
   authority: "duckduckgo.com",
 };
-const MAX_RETRIES = 2;
 
 /** Code snippet from https://github.com/KshitijMhatre/duckduckgo-images-api/blob/master/src/api.js with added type-safety and removed unnecessity */
 async function getToken(keywords: string) {
@@ -65,16 +64,13 @@ async function getToken(keywords: string) {
 async function image_search({
   query,
   moderate,
-  retries,
 }: {
   query: string;
   moderate: boolean;
-  retries: number;
 }): Promise<Maybe<DDGImageResult>> {
   const reqUrl = BASE_URL + "i.js";
   const keywords = query;
   const p = moderate ? 1 : -1; // by default moderate false
-  if (!retries) retries = MAX_RETRIES; // default to max if none provided
 
   let result: Maybe<DDGImageResult>;
 
@@ -128,6 +124,7 @@ async function image_search({
     }
   } catch (error) {
     console.error(error);
+    throw new Error("Failed to search an image");
   }
   return result;
 }
