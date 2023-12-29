@@ -1,36 +1,78 @@
+import * as Accordion from "@/common/components/ui/accordion";
 import * as Avatar from "@/common/components/ui/avatar";
 import { Button } from "@/common/components/ui/button";
 import * as Dialog from "@/common/components/ui/dialog";
 import * as Dropdown from "@/common/components/ui/dropdown";
+import { handleClientError } from "@/common/components/ui/error";
 import { Image } from "@/common/components/ui/image";
 import { Input } from "@/common/components/ui/input";
+import { Textarea } from "@/common/components/ui/textarea";
 import { withAuth, type WithAuthType } from "@/common/helpers/ssr";
+import { type Module } from "@/type";
 import { api } from "@/utils/api";
 import { getRelativeTimeString } from "@/utils/date";
-import { Book, BookPlus, Calendar, Clock9, LogOut } from "lucide-react";
+import {
+  Book,
+  BookPlus,
+  Calendar,
+  Clock9,
+  LogOut,
+  MessageSquarePlus,
+  Send,
+  X,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SubjectsPage(props: WithAuthType) {
   const [showModal, setShowModal] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [data, setData] = useState<{ subject: string }>();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [input, setInput] = useState<{
+    subject?: string;
+    feedback?: string;
+  }>();
+  const [modules, setModules] = useState<Module[]>([]);
+  const [state, setState] = useState<"INITIATE" | "CONFIRMATION">("INITIATE");
 
   const subject = {
-    create: api.subject.create.useMutation(),
+    generate: api.subject.generate.useMutation({
+      onSuccess: (data) => {
+        setModules(data);
+        setState("CONFIRMATION");
+      },
+      onError: (error) => handleClientError(error.message),
+    }),
+    regenerate: api.subject.regenerate.useMutation({
+      onSuccess: (data) => {
+        setModules(data);
+        toast.success("Learning path is regenerated");
+      },
+      onError: (error) => handleClientError(error.message),
+    }),
     all: api.subject.getAll.useQuery({ page: 0 }),
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!data) return;
-    await subject.create.mutateAsync({ subject: data.subject });
-    await subject.all.refetch();
-    setData(undefined);
-    setShowModal(false);
+    if (!input?.subject) return;
+    await subject.generate.mutateAsync({ subject: input.subject });
   };
+
+  const onRegenerate = async () => {
+    if (!input?.subject) return;
+    if (!input?.feedback) return handleClientError("Please fill the feedback");
+    await subject.regenerate.mutateAsync({
+      subject: input.subject,
+      feedback: input.feedback,
+      modules,
+    });
+    setShowFeedback(false);
+    setInput((prev) => ({ ...prev, feedback: undefined }));
+  };
+
   return (
     <>
       <nav className="flex flex-row items-center justify-between px-[24px] py-[18px]">
@@ -82,46 +124,129 @@ export default function SubjectsPage(props: WithAuthType) {
         >
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Learn New Subject</Dialog.Title>
+              <Dialog.Title>
+                {state === "INITIATE"
+                  ? "Learn New Subject"
+                  : "Review Your Modules"}
+              </Dialog.Title>
               <Dialog.Description>
-                What do you want to learn today?
+                {state === "INITIATE"
+                  ? "What are you going to learn?"
+                  : "Here are the modules that you're going to learn"}
               </Dialog.Description>
             </Dialog.Header>
             <form
               className="flex w-full flex-col gap-[20px] text-left"
               onSubmit={onSubmit}
             >
-              <div className="flex flex-col gap-[10px]">
-                <Input
-                  id="subject"
-                  placeholder="Thermodynamics"
-                  className="w-full"
-                  type="text"
-                  required
-                  onChange={(e) =>
-                    setData((prev) => ({
-                      ...prev,
-                      subject: e.currentTarget.value,
-                    }))
-                  }
-                />
-              </div>
+              {state === "INITIATE" ? (
+                <div className="flex flex-col gap-[10px]">
+                  <Input
+                    id="subject"
+                    placeholder="Thermodynamics"
+                    className="w-full"
+                    type="text"
+                    required
+                    defaultValue={input?.subject}
+                    onChange={(e) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        subject: e.currentTarget.value,
+                      }))
+                    }
+                  />
+                </div>
+              ) : modules.length > 0 ? (
+                <div className="flex flex-col gap-[10px]">
+                  <Accordion.Root type="single" collapsible>
+                    {modules.map((module, id) => (
+                      <Accordion.Item value={module.title} key={id}>
+                        <Accordion.Trigger>
+                          #{id + 1} {module.title}
+                        </Accordion.Trigger>
+                        <Accordion.Content className="opacity-50">
+                          {module.overview}
+                        </Accordion.Content>
+                      </Accordion.Item>
+                    ))}
+                  </Accordion.Root>
+                  {showFeedback ? (
+                    <div className="flex flex-col gap-[10px]">
+                      <Textarea
+                        id="feedback"
+                        placeholder="What do you think about this subject?"
+                        className="w-full"
+                        required
+                        onChange={(e) =>
+                          setInput((prev) => ({
+                            ...prev,
+                            feedback: e.currentTarget.value,
+                          }))
+                        }
+                      />
+                    </div>
+                  ) : null}
+                  {showFeedback ? (
+                    <div className="flex items-center gap-[10px]">
+                      <Button
+                        variant="secondary"
+                        onClick={() => setShowFeedback(false)}
+                        icon={{ icon: X }}
+                      />
+
+                      <Button
+                        className="w-full"
+                        type="button"
+                        variant={"secondary"}
+                        onClick={onRegenerate}
+                        icon={{
+                          icon: Send,
+                        }}
+                        isLoading={subject.regenerate.isLoading}
+                        disabled={subject.regenerate.isLoading}
+                      >
+                        Send Feedback
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      className="w-full"
+                      type="button"
+                      variant={"secondary"}
+                      onClick={() => setShowFeedback(true)}
+                      icon={{
+                        icon: MessageSquarePlus,
+                      }}
+                    >
+                      Give Feedback
+                    </Button>
+                  )}
+                </div>
+              ) : null}
               <div className="flex items-center justify-between gap-[10px]">
                 <Button
                   className="w-full"
                   type="button"
                   variant={"secondary"}
-                  onClick={() => setShowModal(false)}
-                  disabled={subject.create.isLoading}
+                  onClick={
+                    state === "INITIATE"
+                      ? () => {
+                          setShowModal(false);
+                          setInput(undefined);
+                          setModules([]);
+                        }
+                      : () => setState("INITIATE")
+                  }
+                  disabled={subject.generate.isLoading}
                 >
-                  Cancel
+                  {state === "INITIATE" ? "Cancel" : "Change Subject"}
                 </Button>
                 <Button
                   className="w-full"
                   type="submit"
-                  isLoading={subject.create.isLoading}
+                  isLoading={subject.generate.isLoading}
                 >
-                  Create
+                  {state === "INITIATE" ? "Generate" : "Confirm"}
                 </Button>
               </div>
             </form>
@@ -147,27 +272,26 @@ export default function SubjectsPage(props: WithAuthType) {
                   type="text"
                   required
                   onChange={(e) =>
-                    setData((prev) => ({
+                    setInput((prev) => ({
                       ...prev,
                       subject: e.currentTarget.value,
                     }))
                   }
                 />
               </div>
-
               <Button
                 className="w-full"
                 type="submit"
                 disabled={
-                  data?.subject == null ||
-                  data.subject == "" ||
-                  subject.create.isLoading
+                  input?.subject == null ||
+                  input.subject == "" ||
+                  subject.generate.isLoading
                 }
-                isLoading={subject.create.isLoading}
+                isLoading={subject.generate.isLoading}
               >
-                {data?.subject == null || data.subject == ""
+                {input?.subject == null || input.subject == ""
                   ? "Type to Start"
-                  : `Learn ${data.subject}`}
+                  : `Learn ${input.subject}`}
               </Button>
             </form>
           </div>
