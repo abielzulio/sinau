@@ -6,6 +6,7 @@ import { api } from "@/utils/api";
 
 import "@/styles/globals.css";
 import Head from "next/head";
+import { Toaster } from "sonner";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -17,6 +18,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/brand/sinau-white.svg" type="image/svg+xml" />
         <title>Sinau</title>
       </Head>
+      <Toaster richColors closeButton />
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
