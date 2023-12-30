@@ -19,17 +19,34 @@ export const redirectToAuth = {
   },
 };
 
+const handleAuth = async (ctx: GetServerSidePropsContext) => {
+  const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+
+  if (!session) {
+    return redirectToAuth;
+  }
+
+  if (ctx.req.url === "/") {
+    return redirectTo("/subject");
+  }
+
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+};
+
 export type WithAuthType = InferGetServerSidePropsType<
   ReturnType<typeof withAuth>
 >;
 
 export const withAuth = () => {
   return async (ctx: GetServerSidePropsContext) => {
-    const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+    return await handleAuth(ctx);
+  };
+};
 
-    if (!session) {
-      return redirectToAuth;
-    }
 
     if (ctx.req.url === "/") {
       return redirectTo("/subject");
