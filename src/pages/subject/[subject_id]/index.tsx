@@ -1,3 +1,4 @@
+import useDeleteModal from "@/common/components/delete-modal";
 import * as Avatar from "@/common/components/ui/avatar";
 import { Button } from "@/common/components/ui/button";
 import * as Dropdown from "@/common/components/ui/dropdown";
@@ -15,6 +16,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
   ScrollText,
+  Trash,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -54,6 +56,20 @@ export default function SubjectItemPage({
     },
   });
 
+  const { component: renderDeleteModal, show: showDeleteModal } =
+    useDeleteModal({
+      noun: `"${subject.name}" subject`,
+      isLoading: _delete.isLoading,
+      callback: {
+        onDelete: async () => {
+          await _delete.mutateAsync({ id: subject.id });
+        },
+        onDone: async () => {
+          await push("/subject");
+        },
+      },
+    });
+
   useEffect(() => {
     setSelectedModule(
       subject.modules.find((x) => x.id === subject.lastSelectedModuleId),
@@ -82,12 +98,9 @@ export default function SubjectItemPage({
     });
   }, []);
 
-  const onDelete = async () => {
-    await _delete.mutateAsync({ id: subject.id });
-  };
-
   return (
     <>
+      {renderDeleteModal()}
       <nav className="flex flex-row items-center justify-between bg-off-white px-[24px] py-[18px]">
         <Link href="/subject" className="flex flex-row items-center gap-[10px]">
           <Image
@@ -119,6 +132,7 @@ export default function SubjectItemPage({
           </Dropdown.Root>
         </div>
       </nav>
+
       <main className="min-w-screen flex h-[calc(100vh-75px)] flex-col border-t-[1px] border-black/10">
         <section className="flex items-center justify-between px-[24px] py-[18px]">
           <div className="flex flex-col gap-[10px]">
@@ -129,9 +143,10 @@ export default function SubjectItemPage({
             </div>
           </div>
           <Button
-            variant={"destructive"}
-            onClick={onDelete}
-            isLoading={_delete.isLoading}
+            variant={"secondary"}
+            type="button"
+            onClick={() => showDeleteModal(true)}
+            icon={{ icon: Trash }}
           >
             Delete
           </Button>
@@ -197,6 +212,7 @@ export default function SubjectItemPage({
                   icon={{
                     icon: showModules ? PanelRightOpen : PanelRightClose,
                   }}
+                  type="button"
                   variant={"secondary"}
                   onClick={() => setShowModules((prev) => !prev)}
                 />
@@ -212,16 +228,21 @@ export default function SubjectItemPage({
               <div className="ml-auto flex items-center gap-[10px]">
                 <Button
                   icon={{ icon: ScrollText }}
+                  type="button"
                   onClick={() => setShowQuiz((prev) => !prev)}
                 >
                   Take a Quiz
                 </Button>
-                <Button variant="secondary" icon={{ icon: MessageSquare }}>
+                <Button
+                  variant="secondary"
+                  icon={{ icon: MessageSquare }}
+                  type="button"
+                >
                   Ask AI
                 </Button>
               </div>
             </div>
-            <div className="flex flex-col p-[16px]">
+            <div className="flex w-full flex-col p-[16px]">
               {isRendered ? (
                 <ReactPlayer
                   image={selectedModule?.video.cover}
