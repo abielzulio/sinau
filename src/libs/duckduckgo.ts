@@ -77,7 +77,7 @@ async function image_search({
   try {
     const token = await getToken(keywords);
 
-    const params = {
+    const params: Record<string, string> = {
       l: "wt-wt",
       o: "json",
       q: keywords,
@@ -97,11 +97,17 @@ async function image_search({
       };
 
       try {
+
         const url = new URL(reqUrl);
 
-        Object.keys(params).forEach((key: string) =>
-          url.searchParams.append(key, params[key]),
-        );
+        Object.keys(params).forEach((key: string) => {
+          const value = params[key];
+          if (value !== undefined) {
+            url.searchParams.append(key, value);
+          }
+        });
+
+
 
         const response = await fetch(url.href, {
           method: "GET",
@@ -117,7 +123,7 @@ async function image_search({
       }
       result = data.results[0];
       if (!data.next) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           resolve(result);
         });
       }
@@ -135,7 +141,6 @@ const duckduckgo = {
       const result = await image_search({
         query,
         moderate: true,
-        retries: 1,
       });
 
       // TODO: Add a placeholder empty image
