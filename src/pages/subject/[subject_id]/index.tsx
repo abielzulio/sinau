@@ -29,6 +29,7 @@ import {
   ScrollText,
   Trash,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
@@ -285,6 +286,19 @@ const SelectedModule = ({
             <Markdown text={module?.reading} />
           </article>
         )}
+        {module?.references && module?.references.length > 0 ? (
+          <div className="flex flex-col gap-[5px]">
+            <p className="font-semibold">References to Read</p>
+            {JSON.parse(module.references).map(
+              (reference: { url: string; id: string; title: string }, id) => (
+                <Link href={reference.url} key={reference.id} target="_blank">
+                  {id + 1}.
+                  <span className="ml-[4px] underline">{reference.title}</span>
+                </Link>
+              ),
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );
