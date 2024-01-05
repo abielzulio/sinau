@@ -70,7 +70,7 @@ export const subjectRouter = createTRPCRouter({
         });
       }
 
-      posthog.capture({
+      posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
         event: "generate initial subject module",
@@ -134,7 +134,7 @@ export const subjectRouter = createTRPCRouter({
         });
       }
 
-      posthog.capture({
+      posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
         event: "regenerate initial subject module",
@@ -295,7 +295,7 @@ export const subjectRouter = createTRPCRouter({
         }
       }
 
-      posthog.capture({
+      posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
         event: "create subject module",
@@ -340,7 +340,7 @@ export const subjectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input: { id } }) => {
       const data = await ctx.db.subject.delete({ where: { id } });
 
-      posthog.capture({
+      posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
         event: "delete subject",
