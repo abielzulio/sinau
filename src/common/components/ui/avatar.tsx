@@ -30,14 +30,23 @@ const Image = React.forwardRef<
 ));
 Image.displayName = AvatarPrimitive.Image.displayName;
 
+interface AvatarFallbackProps
+  extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback> {
+  isLoading?: boolean;
+}
+
 const Fallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
+  AvatarFallbackProps
+>(({ className, isLoading, ...props }, ref) => (
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      "bg-off-white flex h-full w-full items-center justify-center rounded-full",
+      "flex h-full w-full items-center justify-center rounded-full",
+      {
+        "animate-pulse bg-gray-300": isLoading,
+        "bg-off-white": !isLoading,
+      },
       className,
     )}
     {...props}
