@@ -43,7 +43,7 @@ Sinau is an open-source generative learning path platform to help anyone learn a
 - [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
 - [Next.js](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
-- [Auth.js](https://authjs.dev/)
+- [Clerk](https://clerk.com/)
 - [Neon](https://neon.tech)
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)
@@ -63,7 +63,7 @@ Here is what you need to be able to run Sinau locally.
 - Docker
 - [Trigger.dev](https://trigger.dev/) account
 - [OpenAI](https://openai.com/) account
-- [Google Cloud](https://cloud.google.com/) account (for Google authentication provider)
+- [Clerk](https://clerk.com/) account
 
 ### Setup
 
@@ -85,7 +85,7 @@ Here is what you need to be able to run Sinau locally.
    npm i
    ```
 
-4. Set up the local PostgreSQL through Docker
+4. Set-up and run local PostgreSQL through Docker
 
    ```sh
    docker-compose up -d
@@ -97,12 +97,13 @@ Here is what you need to be able to run Sinau locally.
    - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
    - Go to [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
    - Go to [Open AI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
-   - Go to [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
+   - Go to [Clerk](https://clerk.com/) and paste your `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to the `.env` file.
 
 6. Run the database migration
 
    ```sh
-   npm run db:migrate
+   npm run db:generate
+   npm run db:push
    ```
 
 7. Run the app locally
@@ -146,7 +147,7 @@ Special thanks to these amazing projects which help power Sinau:
 - [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
 - [Next.js](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
-- [Auth.js](https://authjs.dev/)
+- [Clerk](https://clerk.com/)
 - [Neon](https://neon.tech)
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)
