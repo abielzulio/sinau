@@ -147,7 +147,7 @@ export const subjectRouter = createTRPCRouter({
           cover,
           lastActiveModuleId: "",
           lastSelectedModuleId: "",
-          User: { connect: { id: ctx.session.user.id } },
+          userId: ctx.auth.userId,
         },
       });
 
@@ -224,7 +224,7 @@ export const subjectRouter = createTRPCRouter({
           payload: {
             subject: data.name,
             videos: videosWithNoTranscript,
-            userId: ctx.session.user.id,
+            userId: ctx.auth.userId,
           },
           id: data.id,
         });
@@ -268,7 +268,7 @@ export const subjectRouter = createTRPCRouter({
               modules,
               transcript: transcript,
               subject: data.name,
-              userId: ctx.session.user.id,
+              userId: ctx.auth.userId,
             },
             source: env.TRIGGER_ID,
           });
@@ -280,7 +280,7 @@ export const subjectRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ page: z.number().min(0) }))
     .query(async ({ ctx, input: { page = 0 } }) => {
-      return await subject.getAll(ctx.db, ctx.session.user.id, page);
+      return await subject.getAll(ctx.db, ctx.auth.userId, page);
     }),
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
