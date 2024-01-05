@@ -1,28 +1,160 @@
-# Create T3 App
+<a href="https://sinau.app">
+  <img alt="Sinau — Generative learning path platform" src="https://www.sinau.app/og.png">
+  <h1 align="center">Sinau</h1>
+</a>
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+<p align="center">
+  Generative learning path platform for everyone
+</p>
 
-## What's next? How do I make an app with this?
+<p align="center">
+  <a href="https://twitter.com/abielzulio">
+    <img src="https://img.shields.io/twitter/follow/abielzulio?style=flat&label=abielzulio&logo=twitter&color=0bf&logoColor=fff" alt="Abiel Zulio M Twitter follower count" />
+  </a>
+  <a href="https://github.com/abielzulio/sinau">
+    <img src="https://img.shields.io/github/stars/abielzulio/sinau?label=abielzulio%2Fsinau" alt="Sinau repo star count" />
+  </a>
+</p>
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+<p align="center">
+  <a href="#introduction"><strong>Introduction</strong></a> ·
+  <a href="#features"><strong>Features</strong></a> ·
+  <a href="#tech-stack"><strong>Tech Stack</strong></a> ·
+  <a href="#development"><strong>Development</strong></a> ·
+  <a href="#contributing"><strong>Contributing</strong></a> ·
+  <a href="#author"><strong>Author</strong></a> ·
+  <a href="#license"><strong>License</strong></a>
+</p>
+<br/>
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Introduction
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Sinau is an open-source generative learning path platform to help anyone learn any subject from zero knowledge. It's a platform to guide and help you to learn anything that was unthinkable before.
 
-## Learn More
+## Features
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- Module-based learning path
+- Youtube video, reading material, and quiz per module
+- Reading references list
+- AI-assisted chatbot
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Tech Stack
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
+- [Next.js](https://nextjs.org/)
+- [tRPC](https://trpc.io/)
+- [Auth.js](https://authjs.dev/)
+- [Neon](https://neon.tech)
+- [Prisma.io](https://prisma.io/)
+- [OpenAI](https://openai.com/)
+- [Trigger.dev](https://trigger.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-## How do I deploy this?
+## Development
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+To get a local copy up and running, please follow these simple steps.
+
+### Prerequisites
+
+Here is what you need to be able to run Sinau locally.
+
+- Node.js
+- PostgreSQL
+- Docker
+- [Trigger.dev](https://trigger.dev/) account
+- [OpenAI](https://openai.com/) account
+- [Google Cloud](https://cloud.google.com/) account (for Google authentication provider)
+
+### Setup
+
+1. Clone the repo
+
+   ```sh
+   git clone https://github.com/abielzulio/sinau.git
+   ```
+
+2. Go to the project folder
+
+   ```sh
+   cd sinau
+   ```
+
+3. Install packages
+
+   ```sh
+   npm i
+   ```
+
+4. Set up the local PostgreSQL through Docker
+
+   ```sh
+   docker-compose up -d
+   ```
+
+5. Set up the local PostgreSQL through Docker
+
+   ```sh
+   docker-compose up -d
+   ```
+
+6. Set up your `.env` file
+
+   - Duplicate `.env.example` to `.env`
+   - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
+   - Open [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
+   - Open [OpenAI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
+   - Open [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
+
+7. Run the database migration
+
+   ```sh
+   npm run db:migrate
+   ```
+
+8. Run the app locally
+
+   ```sh
+   npm run dev
+   ```
+
+9. Run the trigger.dev locally (in a separate terminal)
+
+   ```sh
+   npx @trigger.dev/cli@latest dev
+   ```
+
+## Contributing
+
+Here's how you can contribute:
+
+- [Open an issue](https://github.com/abielzulio/sinau/issues) if you believe you've encountered a bug.
+- Make a [pull request](https://github.com/abielzulio/sinau/pull) to add new features/make quality-of-life improvements/fix bugs.
+
+<!-- ## Contributors
+
+<a href="https://github.com/abielzulio/sinau/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=abielzulio/sinau" />
+</a>
+ -->
+
+## Author
+
+- Abiel Zulio M ([@abielzulio](https://twitter.com/abielzulio))
+
+## License
+
+Distributed under the [AGPLv3 License](https://github.com/abielzulio/sinau/blob/main/LICENSE). See `LICENSE` for more information.
+
+## Acknowledgements
+
+Special thanks to these amazing projects which help power Sinau:
+
+- [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
+- [Next.js](https://nextjs.org/)
+- [tRPC](https://trpc.io/)
+- [Auth.js](https://authjs.dev/)
+- [Neon](https://neon.tech)
+- [Prisma.io](https://prisma.io/)
+- [OpenAI](https://openai.com/)
+- [Trigger.dev](https://trigger.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
