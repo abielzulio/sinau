@@ -11,7 +11,7 @@ export const env = createEnv({
       .string()
       .url()
       .refine(
-        (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
+        (str) => !str.includes("YOUR_DB_URL_HERE"),
         "You forgot to change the default URL",
       ),
     NODE_ENV: z
@@ -19,7 +19,7 @@ export const env = createEnv({
       .default("development"),
     OPENAI_API_KEY: z.string(),
     TRIGGER_ID: z.string(),
-    TRIGGER_API_KEY: z.string(),
+    TRIGGER_API_KEY: z.string().optional(),
     TRIGGER_API_URL: z.preprocess(
       (str) =>
         process.env.VERCEL_URL
@@ -39,6 +39,17 @@ export const env = createEnv({
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY: z.string(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+    NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS: z.string().optional().default("false"),
+    NEXT_PUBLIC_POSTHOG_KEY: z.preprocess(
+      (str) =>
+        process.env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true"
+          ? str
+          : undefined,
+      process.env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true"
+        ? z.string()
+        : z.string().optional(),
+    ),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().optional(),
   },
 
   /**
@@ -57,6 +68,10 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS:
+      process.env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

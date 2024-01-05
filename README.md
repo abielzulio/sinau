@@ -48,6 +48,7 @@ Sinau is an open-source generative learning path platform to help anyone learn a
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)
 - [Trigger.dev](https://trigger.dev/)
+- [Posthog](https://posthog.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ## Development
