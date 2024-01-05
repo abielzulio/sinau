@@ -41,7 +41,10 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
     NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS: z.string().optional().default("false"),
     NEXT_PUBLIC_POSTHOG_KEY: z.preprocess(
-      (bool) => bool,
+      (str) =>
+        process.env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true"
+          ? str
+          : undefined,
       process.env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true"
         ? z.string()
         : z.string().optional(),
