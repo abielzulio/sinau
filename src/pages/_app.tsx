@@ -1,10 +1,10 @@
+import { env } from "@/env";
+import "@/styles/globals.css";
+import { api } from "@/utils/api";
+import { TriggerProvider } from "@trigger.dev/react";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
-
-import { api } from "@/utils/api";
-
-import "@/styles/globals.css";
 import Head from "next/head";
 import { Toaster } from "sonner";
 
@@ -20,7 +20,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <Toaster richColors closeButton />
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <TriggerProvider publicApiKey={env.NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY}>
+          <Component {...pageProps} />
+        </TriggerProvider>
       </SessionProvider>
     </>
   );
