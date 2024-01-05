@@ -27,6 +27,7 @@ export const env = createEnv({
           : str,
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
+    CLERK_SECRET_KEY: z.string(),
   },
 
   /**
@@ -37,6 +38,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY: z.string(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
   },
 
   /**
@@ -52,6 +54,9 @@ export const env = createEnv({
     TRIGGER_ID: process.env.TRIGGER_ID,
     NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY:
       process.env.NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

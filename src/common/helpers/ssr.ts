@@ -1,4 +1,4 @@
-import { getServerAuthSession } from "@/server/auth";
+import { getAuth } from "@clerk/nextjs/server";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -19,9 +19,9 @@ export const redirectToAuth = {
 };
 
 const handleAuth = async (ctx: GetServerSidePropsContext) => {
-  const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+  const auth = getAuth(ctx.req);
 
-  if (!session) {
+  if (!auth.userId) {
     return redirectToAuth;
   }
 
