@@ -1,3 +1,4 @@
+import NavigationBar from "@/common/components/navigation-bar";
 import * as Accordion from "@/common/components/ui/accordion";
 import * as Avatar from "@/common/components/ui/avatar";
 import { Button } from "@/common/components/ui/button";
@@ -93,49 +94,21 @@ export default function SubjectsPage(props: WithAuthType) {
 
   return (
     <>
-      <nav className="fixed flex w-full flex-row items-center justify-between bg-off-white px-[24px] py-[18px]">
-        <div className="flex flex-row items-center gap-[10px]">
-          <Image
-            src="/brand/sinau-black.svg"
-            alt="Sinau Logo"
-            className="h-[18px] w-[18px]"
-          />
-          <p className="font-medium">Sinau</p>
-        </div>
-        <div className="flex flex-row items-center gap-[15px]">
-          {subject.all.data && subject.all.data.length > 0 ? (
-            <Button
-              onClick={() => setShowModal(true)}
-              type="button"
-              icon={{
-                icon: BookPlus,
-              }}
-            >
-              Learn New Subject
-            </Button>
-          ) : null}
-          <Dropdown.Root>
-            <Dropdown.Trigger>
-              <Avatar.Root>
-                <Avatar.Image src={props.user.image!} alt="Avatar" />
-                <Avatar.Fallback>
-                  {(props.user.name ?? props.user.email?.split("@"))?.[0]}
-                </Avatar.Fallback>
-              </Avatar.Root>
-            </Dropdown.Trigger>
-            <Dropdown.Content align="end" sideOffset={10}>
-              <Dropdown.Item
-                className="flex items-center gap-[10px] hover:cursor-pointer"
-                onClick={() => void signOut()}
-              >
-                <LogOut size={14} />
-                Sign out
-              </Dropdown.Item>
-            </Dropdown.Content>
-          </Dropdown.Root>
-        </div>
-      </nav>
-      <main className="min-w-screen flex min-h-screen flex-col bg-off-white px-[24px] pt-[80px]">
+      <NavigationBar>
+        {subject.all.data && subject.all.data.length > 0 ? (
+          <Button
+            onClick={() => setShowModal(true)}
+            type="button"
+            icon={{
+              icon: BookPlus,
+            }}
+          >
+            Learn New Subject
+          </Button>
+        ) : null}
+      </NavigationBar>
+
+      <main className="min-w-screen flex min-h-screen flex-col bg-off-white px-[24px] pb-[32px] pt-[80px]">
         <Dialog.Root
           open={showModal}
           onOpenChange={(open) => setShowModal(open)}
