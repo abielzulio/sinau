@@ -101,9 +101,9 @@ Here is what you need to be able to run Sinau locally.
 
    - Duplicate `.env.example` to `.env`
    - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
-   - Open [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
-   - Open [OpenAI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
-   - Open [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
+   - Go to [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
+   - Go to [Open AI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
+   - Go to [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
 
 7. Run the database migration
 
