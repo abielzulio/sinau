@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 
-const useRendered = () => {
+const useRendered = (delay?: number) => {
   const [isRendered, setRendered] = useState(false);
 
   useEffect(() => {
-    setRendered(true);
+    if (!delay) {
+      const timeout = setTimeout(() => {
+        setRendered(true);
+      }, 10);
+
+      return () => clearTimeout(timeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setRendered(true);
+    }, delay);
+
+    return () => clearTimeout(timeout);
   }, []);
 
   return isRendered;
