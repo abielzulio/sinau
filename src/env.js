@@ -33,7 +33,13 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     TRIGGER_ID: z.string(),
     TRIGGER_API_KEY: z.string(),
-    TRIGGER_API_URL: z.string(),
+    TRIGGER_API_URL: z.preprocess(
+      (str) =>
+        process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}/api/trigger`
+          : str,
+      process.env.VERCEL ? z.string() : z.string().url(),
+    ),
   },
 
   /**
