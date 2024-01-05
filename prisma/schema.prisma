@@ -68,24 +68,26 @@ model Subject {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   modules              Module[]
-  lastActiveModuleId   String?
-  lastSelectedModuleId String?
+  lastActiveModuleId   String
+  lastSelectedModuleId String
   User                 User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               String?
 }
 
 model Module {
   id          String   @id @default(cuid())
+  order       Int
+  runId       String?
   title       String
   overview    String?
   reading     String?
-  reference   String?
+  references  String?
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
 
   subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subjectId String?
@@ -99,6 +101,5 @@ model Video {
   transcript String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  modules Module[]
+  modules    Module[]
 }

@@ -1,15 +1,13 @@
 import NavigationBar from "@/common/components/navigation-bar";
 import * as Accordion from "@/common/components/ui/accordion";
-import * as Avatar from "@/common/components/ui/avatar";
 import { Button } from "@/common/components/ui/button";
 import * as Dialog from "@/common/components/ui/dialog";
-import * as Dropdown from "@/common/components/ui/dropdown";
 import { handleClientError } from "@/common/components/ui/error";
 import { Image } from "@/common/components/ui/image";
 import { Input } from "@/common/components/ui/input";
 import { Skeleton } from "@/common/components/ui/skeleton";
 import { Textarea } from "@/common/components/ui/textarea";
-import { withAuth, type WithAuthType } from "@/common/helpers/ssr";
+import { withAuth } from "@/common/helpers/ssr";
 import { type Module } from "@/type";
 import { api } from "@/utils/api";
 import { getRelativeTimeString } from "@/utils/date";
@@ -18,18 +16,16 @@ import {
   BookPlus,
   Calendar,
   Clock9,
-  LogOut,
   MessageSquarePlus,
   Send,
   X,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function SubjectsPage(props: WithAuthType) {
+export default function SubjectsPage() {
   const [showModal, setShowModal] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [input, setInput] = useState<{
@@ -38,6 +34,7 @@ export default function SubjectsPage(props: WithAuthType) {
   }>();
   const [modules, setModules] = useState<Module[]>([]);
   const [state, setState] = useState<"INITIATE" | "CONFIRMATION">("INITIATE");
+
   const { push } = useRouter();
 
   const subject = {
@@ -153,7 +150,7 @@ export default function SubjectsPage(props: WithAuthType) {
                     <Accordion.Root type="single" collapsible>
                       {modules.map((module, id) => (
                         <Accordion.Item value={module.title} key={id}>
-                          <Accordion.Trigger>
+                          <Accordion.Trigger className="items-start text-left">
                             #{id + 1} {module.title}
                           </Accordion.Trigger>
                           <Accordion.Content className="opacity-50">

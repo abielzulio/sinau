@@ -1,16 +1,19 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+import { env } from "@/env";
 import duckduckgo from "@/libs/duckduckgo";
 import openai from "@/libs/openai";
-import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { trigger } from "@/libs/trigger";
+import youtube from "@/libs/youtube";
+import { subject } from "@/server/db/query";
 import { type Module } from "@/type";
 import { TRPCError } from "@trpc/server";
-import youtube from "@/libs/youtube";
-import { sleep } from "@/utils";
+import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 const baseMessage = (subject: string): ChatCompletionMessageParam[] => {
-  const prompt = `I'm very dumb and didn't know anything about "${subject}" subject yet and now I'm going to learn "${subject}" subject with zero knowledge. I need you to create a learning path for me to learn "${subject}" subject by breaking the "${subject}" subject down into modules as concise and complete as possible from the very basic into the most advanced and should be connected from the beginning to the end.\n\nYou need to really consider deciding what are the best modules that I need to learn gradually and progressively with maximum 15 modules.\n\nEach modules should containt the module title and the module short overview of what I'm going to learn. Return ONLY an array of object with "title" and "overview" key under "modules" array key with proper capitalization in each object and English grammar.\n\nEach of the module needs to be verbose and concise as much as possible and has a minimum of two words. Do not include any other output. Just the JSON array.`;
+  const prompt = `I'm very dumb and didn't know anything about "${subject}" subject yet and now I'm going to learn "${subject}" subject with zero knowledge. I need you to create a learning path for me to learn "${subject}" subject by breaking the "${subject}" subject down into modules as concise and complete as possible from the very basic into the most advanced and should be connected from the beginning to the end.\n\nYou need to really consider deciding what are the best modules that I need to learn gradually and progressively. You can make it concise as possible if needed from 4 modules or make it maximum into 15 modules maximal.\n\nEach modules should containt the module title and the module short overview of what I'm going to learn. Return ONLY an array of object with "title" and "overview" key under "modules" array key with proper capitalization in each object and English grammar.\n\nEach of the module needs to be verbose and concise as much as possible and has a minimum of two words. Do not include any other output. Just the JSON array.`;
+  /*   const prompt = `I'm very dumb and didn't know anything about "${subject}" subject yet and now I'm going to learn "${subject}" subject with zero knowledge. I need you to create a learning path for me to learn "${subject}" subject by breaking the "${subject}" subject down into modules as concise and complete as possible from the very basic into the most advanced and should be connected from the beginning to the end.\n\nYou need to really consider deciding what are the best modules that I need to learn gradually and progressively. You need to make it concise as possible to maximal 2 modules.\n\nEach modules should containt the module title and the module short overview of what I'm going to learn. Return ONLY an array of object with "title" and "overview" key under "modules" array key with proper capitalization in each object and English grammar.\n\nEach of the module needs to be verbose and concise as much as possible and has a minimum of two words. Do not include any other output. Just the JSON array.`; */
   return [
     {
       role: "system",
@@ -26,10 +29,23 @@ const baseMessage = (subject: string): ChatCompletionMessageParam[] => {
 export const subjectRouter = createTRPCRouter({
   generate: protectedProcedure
     .input(z.object({ subject: z.string().min(1) }))
-    .mutation(async ({ input: { subject } }) => {
+    .mutation(async ({ input: { subject }, ctx }) => {
+      const exist = await ctx.db.subject.findFirst({
+        select: { id: true },
+        where: { name: subject },
+      });
+
+      if (exist) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Subject "${subject}" already exist`,
+        });
+      }
+
       const request = await openai.chat.completions.create({
         messages: [...baseMessage(subject)],
         model: "gpt-3.5-turbo-1106",
+        temperature: 0.1,
         response_format: {
           type: "json_object",
         },
@@ -82,6 +98,7 @@ export const subjectRouter = createTRPCRouter({
           },
         ],
         model: "gpt-3.5-turbo-1106",
+        temperature: 0.1,
         response_format: {
           type: "json_object",
         },
@@ -128,36 +145,34 @@ export const subjectRouter = createTRPCRouter({
         data: {
           name: subject,
           cover,
+          lastActiveModuleId: "",
+          lastSelectedModuleId: "",
           User: { connect: { id: ctx.session.user.id } },
         },
       });
 
-      for (const { title, overview } of modules) {
-        const video = await youtube.getVideo(`${subject} - ${title}`);
+      for (const [id, { title, overview }] of modules.entries()) {
+        const yt = await youtube.getVideo(`${subject} - ${title}`);
 
         const payload = {
-          id: video.id,
-          title: video.title,
-          cover: video.cover,
-          url: `https://www.youtube.com/watch?v=${video.id}`,
-          transcript: "",
+          id: yt.id,
+          title: yt.title,
+          cover: yt.cover,
+          url: `https://www.youtube.com/watch?v=${yt.id}`,
         };
 
-        await ctx.db.video.upsert({
-          where: { id: video.id },
-          create: payload,
+        const video = await ctx.db.video.upsert({
+          where: { id: yt.id },
+          create: { ...payload, transcript: "" },
           update: payload,
         });
 
-        /*         const references = await duckduckgo.search(title);
-
-        await sleep(5000);
- */
-        const _module = await ctx.db.module.create({
+        const mod = await ctx.db.module.create({
           data: {
             title,
             overview,
-            /*             reference: JSON.stringify(references), */
+            order: id + 1,
+            reading: "",
             video: { connect: { id: video.id } },
             subject: { connect: { id: data.id } },
           },
@@ -167,9 +182,95 @@ export const subjectRouter = createTRPCRouter({
           await ctx.db.subject.update({
             where: { id: data.id },
             data: {
-              lastSelectedModuleId: _module.id,
-              lastActiveModuleId: _module.id,
+              lastSelectedModuleId: mod.id,
+              lastActiveModuleId: mod.id,
             },
+          });
+        }
+      }
+
+      const videosWithNoTranscript = await ctx.db.video.findMany({
+        select: {
+          id: true,
+          url: true,
+          modules: {
+            select: {
+              id: true,
+              overview: true,
+              title: true,
+            },
+          },
+        },
+        where: {
+          modules: {
+            some: {
+              subjectId: data.id,
+              reading: {
+                equals: "",
+              },
+            },
+          },
+          transcript: {
+            equals: "",
+          },
+        },
+      });
+
+      // TODO: Handle if video already exist but the module reading material isn't exist
+
+      if (videosWithNoTranscript.length > 0) {
+        await trigger.sendEvent({
+          name: "video.transcripter",
+          payload: {
+            subject: data.name,
+            videos: videosWithNoTranscript,
+            userId: ctx.session.user.id,
+          },
+          id: data.id,
+        });
+      }
+
+      const videosWithTranscript = await ctx.db.video.findMany({
+        select: {
+          id: true,
+          url: true,
+          transcript: true,
+          modules: {
+            select: {
+              id: true,
+              overview: true,
+              title: true,
+            },
+          },
+        },
+        where: {
+          modules: {
+            some: {
+              subjectId: data.id,
+              reading: {
+                equals: "",
+              },
+            },
+          },
+          transcript: {
+            not: {
+              equals: "",
+            },
+          },
+        },
+      });
+
+      if (videosWithTranscript.length > 0) {
+        for (const { transcript, modules } of videosWithTranscript) {
+          await trigger.sendEvent({
+            name: "module.generator",
+            payload: {
+              modules,
+              transcript: transcript,
+              subject: data.name,
+              userId: ctx.session.user.id,
+            },
+            source: env.TRIGGER_ID,
           });
         }
       }
@@ -179,60 +280,12 @@ export const subjectRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ page: z.number().min(0) }))
     .query(async ({ ctx, input: { page = 0 } }) => {
-      const data = await ctx.db.subject.findMany({
-        select: {
-          id: true,
-          name: true,
-          cover: true,
-          isCompleted: true,
-          createdAt: true,
-          updatedAt: true,
-          modules: {
-            select: {
-              id: true,
-            },
-          },
-        },
-        where: { userId: ctx.session.user.id },
-        skip: page * 10,
-        take: 10,
-        orderBy: { createdAt: "desc" },
-      });
-
-      return data;
+      return await subject.getAll(ctx.db, ctx.session.user.id, page);
     }),
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input: { id } }) => {
-      const data = await ctx.db.subject.findUnique({
-        where: { id },
-        select: {
-          id: true,
-          name: true,
-          cover: true,
-          isCompleted: true,
-          createdAt: true,
-          updatedAt: true,
-          modules: {
-            select: {
-              id: true,
-              title: true,
-              overview: true,
-              video: {
-                select: {
-                  id: true,
-                  title: true,
-                  cover: true,
-                  url: true,
-                  transcript: true,
-                },
-              },
-            },
-          },
-        },
-      });
-
-      return data;
+      return await subject.getById(ctx.db, id);
     }),
   update: protectedProcedure
     .input(

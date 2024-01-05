@@ -1,0 +1,1 @@
+export const TRIGGER_LOADING_STATUS = "STARTED" || "PENDING" || "QUEUED";
