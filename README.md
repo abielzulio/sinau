@@ -91,13 +91,7 @@ Here is what you need to be able to run Sinau locally.
    docker-compose up -d
    ```
 
-5. Set up the local PostgreSQL through Docker
-
-   ```sh
-   docker-compose up -d
-   ```
-
-6. Set up your `.env` file
+5. Set up your `.env` file
 
    - Duplicate `.env.example` to `.env`
    - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
@@ -105,19 +99,19 @@ Here is what you need to be able to run Sinau locally.
    - Go to [Open AI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
    - Go to [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
 
-7. Run the database migration
+6. Run the database migration
 
    ```sh
    npm run db:migrate
    ```
 
-8. Run the app locally
+7. Run the app locally
 
    ```sh
    npm run dev
    ```
 
-9. Run the trigger.dev locally (in a separate terminal)
+8. Run the [trigger.dev](https://trigger.dev/) server locally (in a separate terminal)
 
    ```sh
    npx @trigger.dev/cli@latest dev
