@@ -290,7 +290,10 @@ const SelectedModule = ({
           <div className="flex flex-col gap-[5px]">
             <p className="font-semibold">References to Read</p>
             {JSON.parse(module.references).map(
-              (reference: { url: string; id: string; title: string }, id) => (
+              (
+                reference: { url: string; id: string; title: string },
+                id: number,
+              ) => (
                 <Link href={reference.url} key={reference.id} target="_blank">
                   {id + 1}.
                   <span className="ml-[4px] underline">{reference.title}</span>
