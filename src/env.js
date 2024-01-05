@@ -19,18 +19,7 @@ export const env = createEnv({
       .default("development"),
     OPENAI_API_KEY: z.string(),
     TRIGGER_ID: z.string(),
-    // TODO: Set-up trigger in staging env
-    TRIGGER_API_KEY: z.preprocess(
-      (str) =>
-        process.env.NODE_ENV === "development" ||
-        process.env.NODE_ENV === "production"
-          ? str
-          : undefined,
-      process.env.NODE_ENV === "development" ||
-        process.env.NODE_ENV === "production"
-        ? z.string()
-        : z.string().optional(),
-    ),
+    TRIGGER_API_KEY: z.string(),
     TRIGGER_API_URL: z.preprocess(
       (str) =>
         process.env.VERCEL_URL
