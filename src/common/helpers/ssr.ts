@@ -1,5 +1,4 @@
 import { getServerAuthSession } from "@/server/auth";
-import { db } from "@/server/db";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -31,9 +30,7 @@ const handleAuth = async (ctx: GetServerSidePropsContext) => {
   }
 
   return {
-    props: {
-      user: session.user,
-    },
+    props: {},
   };
 };
 
@@ -53,57 +50,6 @@ export type WithSubjectType = InferGetServerSidePropsType<
 
 export const withSubject = () => {
   return async (ctx: GetServerSidePropsContext) => {
-    const auth = await handleAuth(ctx);
-
-    if ("props" in auth) {
-      const { subject_id } = ctx.query;
-
-      if (typeof subject_id !== "string") {
-        return redirectTo("/subject");
-      }
-
-      const data = await db.subject.findUnique({
-        where: { id: subject_id },
-        select: {
-          id: true,
-          name: true,
-          cover: true,
-          isCompleted: true,
-          createdAt: true,
-          updatedAt: true,
-          lastActiveModuleId: true,
-          lastSelectedModuleId: true,
-          modules: {
-            select: {
-              id: true,
-              title: true,
-              overview: true,
-              video: {
-                select: {
-                  id: true,
-                  title: true,
-                  cover: true,
-                  url: true,
-                  transcript: true,
-                },
-              },
-            },
-          },
-        },
-      });
-
-      if (!data) {
-        return redirectTo("/subject");
-      }
-
-      return {
-        props: {
-          ...auth.props,
-          subject: JSON.parse(JSON.stringify(data)) as typeof data,
-        },
-      };
-    }
-
-    return auth;
+    return await handleAuth(ctx);
   };
 };
