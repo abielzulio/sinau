@@ -73,7 +73,7 @@ export const subjectRouter = createTRPCRouter({
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
-        event: "generate initial subject module",
+        event: "Subject: generate initial subject module",
         properties: {
           $subject: subject,
         },
@@ -137,7 +137,7 @@ export const subjectRouter = createTRPCRouter({
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
-        event: "regenerate initial subject module",
+        event: "Subject: regenerate initial subject module",
         properties: {
           $subject: subject,
           $feedback: feedback,
@@ -298,7 +298,7 @@ export const subjectRouter = createTRPCRouter({
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
-        event: "create subject module",
+        event: "Subject: create module",
         properties: {
           $subject: subject,
           $modules_count: modules.length,
@@ -343,7 +343,7 @@ export const subjectRouter = createTRPCRouter({
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
-        event: "delete subject",
+        event: "Subject: delete",
         properties: {
           $subject: data.name,
         },
