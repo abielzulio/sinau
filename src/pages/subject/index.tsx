@@ -7,7 +7,6 @@ import { Image } from "@/common/components/ui/image";
 import { Input } from "@/common/components/ui/input";
 import { Skeleton } from "@/common/components/ui/skeleton";
 import { Textarea } from "@/common/components/ui/textarea";
-import { withAuth } from "@/common/helpers/ssr";
 import { type Module } from "@/type";
 import { api } from "@/utils/api";
 import { getRelativeTimeString } from "@/utils/date";
@@ -314,5 +313,3 @@ export default function SubjectsPage() {
     </>
   );
 }
-
-export const getServerSideProps = withAuth();

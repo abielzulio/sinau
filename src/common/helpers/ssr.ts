@@ -1,3 +1,4 @@
+import { clerkClient } from "@clerk/nextjs";
 import { getAuth } from "@clerk/nextjs/server";
 import type {
   GetServerSidePropsContext,
@@ -19,9 +20,11 @@ export const redirectToAuth = {
 };
 
 const handleAuth = async (ctx: GetServerSidePropsContext) => {
-  const auth = getAuth(ctx.req);
+  const { userId } = getAuth(ctx.req);
 
-  if (!auth.userId) {
+  const user = userId ? await clerkClient.users.getUser(userId) : null;
+
+  if (!user?.id) {
     return redirectToAuth;
   }
 
@@ -31,16 +34,6 @@ const handleAuth = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {},
-  };
-};
-
-export type WithAuthType = InferGetServerSidePropsType<
-  ReturnType<typeof withAuth>
->;
-
-export const withAuth = () => {
-  return async (ctx: GetServerSidePropsContext) => {
-    return await handleAuth(ctx);
   };
 };
 
