@@ -1,7 +1,7 @@
 import { Button } from "@/common/components/ui/button";
 import { Image } from "@/common/components/ui/image";
 import { useUser } from "@/common/hooks/user";
-import { BookOpenText, MessagesSquare, MonitorPlay } from "lucide-react";
+import { BookOpenText, MessagesSquare, MonitorPlay, User } from "lucide-react";
 import { useRouter } from "next/router";
 import ReactPlayer from "react-player";
 import Balancer from "react-wrap-balancer";
@@ -27,9 +27,9 @@ export default function HomePage() {
             <Button
               variant={"secondary"}
               onClick={() => push("/sign-in")}
-              icon={{ icon: BookOpenText }}
+              icon={{ icon: User }}
             >
-              Start Learn Now
+              Login
             </Button>
           )}
         </div>
@@ -49,7 +49,7 @@ export default function HomePage() {
               </Balancer>
             </p>
             <Button
-              onClick={() => push("/sign-in")}
+              onClick={() => push("/sign-up")}
               icon={{ icon: BookOpenText }}
             >
               Start Learn Now
