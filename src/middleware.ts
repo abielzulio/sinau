@@ -1,10 +1,13 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+const publicPaths = ["/"];
+
 export default authMiddleware({
-  publicRoutes: ["/api/trigger", "/"],
+  publicRoutes: publicPaths,
   afterAuth(auth, req) {
     // Handle users who aren't authenticated
+    // TODO: Fix black screen on sign in after sign in
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url });
     }
@@ -24,5 +27,5 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc|trigger)(.*)"],
 };
