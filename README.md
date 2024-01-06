@@ -43,12 +43,12 @@ Sinau is an open-source generative learning path platform to help anyone learn a
 - [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
 - [Next.js](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
-- [Clerk](https://clerk.com/)
-- [Neon](https://neon.tech)
+- [Clerk](https://clerk.com/) (authentication)
+- [Neon](https://neon.tech) (serverlesss PostgreSQL)
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)
-- [Trigger.dev](https://trigger.dev/)
-- [Posthog](https://posthog.com/)
+- [Trigger.dev](https://trigger.dev/) (serverless background jobs)
+- [Posthog](https://posthog.com/) (product analytics)
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ## Development
@@ -97,7 +97,7 @@ Here is what you need to be able to run Sinau locally.
    - Duplicate `.env.example` to `.env`
    - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
    - Go to [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
-   - Go to [Open AI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
+   - Go to [OpenAI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
    - Go to [Clerk](https://clerk.com/) and paste your `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to the `.env` file.
 
 6. Run the database migration
