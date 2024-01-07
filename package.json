@@ -27,6 +27,7 @@
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/react-query": "^4.36.1",
     "@trigger.dev/nextjs": "^2.3.8",
+    "@trigger.dev/openai": "^2.3.9",
     "@trigger.dev/react": "^2.3.8",
     "@trigger.dev/sdk": "^2.3.8",
     "@trpc/client": "^10.43.6",
