@@ -6,6 +6,7 @@ import { cn } from "@/utils";
 function Image({
   className,
   src,
+  objectFit = "contain",
   ...props
 }: Omit<Parameters<typeof NextImage>[0], "fill" | "width" | "height">) {
   const isMounted = React.useRef(false);
@@ -15,7 +16,7 @@ function Image({
 
   return (
     <div className={cn("relative h-full w-full overflow-hidden", className)}>
-      <NextImage {...props} fill className="object-contain" src={src} />
+      <NextImage {...props} fill className={`object-${objectFit}`} src={src} />
     </div>
   );
 }

@@ -278,7 +278,11 @@ export default function SubjectsPage() {
               {subject.all.data?.map((subject) => (
                 <Link key={subject.id} href={`/subject/${subject.id}`}>
                   <div className="relative flex h-[350px] w-full flex-col overflow-hidden rounded-xl border-[1.5px]  border-black/5 bg-white text-left shadow-lg hover:cursor-pointer">
-                    <Image src={subject.cover} alt={subject.name} />
+                    <Image
+                      src={subject.cover}
+                      alt={subject.name}
+                      objectFit="cover"
+                    />
                     <div className="flex flex-col gap-[5px] border-t-[1.5px] border-t-black/5 p-[16px]">
                       <div className="flex items-center gap-[5px] text-sm opacity-50">
                         <Book size={12} />
