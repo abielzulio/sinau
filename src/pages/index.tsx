@@ -40,7 +40,7 @@ export default function HomePage() {
             <div className="w-3/4 text-5xl font-medium tracking-tight lg:w-1/2">
               <h1>Learn towards the unthinkable</h1>
             </div>
-            <p className="text-lg font-medium opacity-50 md:text-xl">
+            <p className="text-lg font-normal opacity-50 md:text-xl">
               <Balancer>
                 Sinau is a generative module-based learning path platform to
                 help anyone learn any subject with zero knowledge. It's a
