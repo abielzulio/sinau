@@ -33,7 +33,7 @@ export const subjectRouter = createTRPCRouter({
     .mutation(async ({ input: { subject }, ctx }) => {
       const exist = await ctx.db.subject.findFirst({
         select: { id: true },
-        where: { name: subject },
+        where: { name: subject, userId: ctx.auth.userId },
       });
 
       if (exist) {
