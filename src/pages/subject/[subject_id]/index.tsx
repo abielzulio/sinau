@@ -168,7 +168,10 @@ const SelectedModule = () => {
 
   useEffect(() => {
     const remoteNotes = selectedModule?.notes;
-    if (!remoteNotes) return;
+    if (!remoteNotes) {
+      setNotes("");
+      return;
+    }
     if (remoteNotes === notes) return;
     setNotes(remoteNotes);
   }, [selectedModule?.notes]);
@@ -332,16 +335,7 @@ const SelectedModule = () => {
           </div>
         </Resizeable.Panel>
         <Resizeable.Handle withHandle />
-        <Resizeable.Panel defaultSize={25}>
-          <textarea
-            defaultValue={selectedModule?.notes ?? ""}
-            /*             onChange={(e) => {
-              console.log(e.currentTarget.value);
-            }} */
-            className="h-full w-full p-[16px] text-sm placeholder:text-sm"
-            placeholder={`Add your note about "${selectedModule?.title}" here`}
-          />
-        </Resizeable.Panel>
+        <Resizeable.Panel defaultSize={25}></Resizeable.Panel>
       </Resizeable.Group>
     </div>
   );
