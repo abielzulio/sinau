@@ -30,6 +30,7 @@ model Module {
   id          String   @id @default(cuid())
   order       Int
   runId       String?
+  notes       String?
   title       String
   overview    String?
   reading     String?

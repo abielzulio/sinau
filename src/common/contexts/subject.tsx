@@ -13,7 +13,7 @@ import { useSubjectRouter } from "../hooks/subject";
 
 interface SubjectContextType {
   subject: ValueAndSet<Maybe<SubjectWithModulesAndVideo>>;
-  selectedModule: ValueAndSet<Maybe<ModuleWithVideo>>;
+  selectedModule: Maybe<ModuleWithVideo>;
   isLoading: boolean;
 }
 
@@ -22,10 +22,7 @@ const SubjectContextImpl = createContext<SubjectContextType>({
     value: undefined,
     set: () => undefined,
   },
-  selectedModule: {
-    value: undefined,
-    set: () => undefined,
-  },
+  selectedModule: undefined,
   isLoading: false,
 });
 
@@ -36,31 +33,34 @@ export const SubjectContextProvider = ({ children }: PropsWithChildren) => {
 
   const [subject, setSubject] =
     useState<SubjectContextType["subject"]["value"]>(data);
+
   const [selectedModule, setSelectedModule] = useState<
-    SubjectContextType["selectedModule"]["value"]
+    SubjectContextType["selectedModule"]
   >(subject?.modules?.find((x) => x.id === subject?.lastSelectedModuleId));
 
-  const update = api.subject.update.useMutation();
+  const update = {
+    subject: api.subject.update.useMutation(),
+    module: api.module.update.useMutation(),
+  };
 
   useEffect(() => {
-    if (typeof data === "undefined" || !data) return;
+    if (!data) return;
     setSubject(data);
   }, [data]);
 
   useEffect(() => {
     if (!subject) return;
     setSelectedModule(
-      subject.modules?.find((x) => x.id === subject?.lastSelectedModuleId),
+      subject?.modules?.find((x) => x.id === subject?.lastSelectedModuleId),
     );
+    if (data?.lastSelectedModuleId === subject?.lastSelectedModuleId) return;
     const timeoutUpdate = setTimeout(() => {
-      if (subject.lastSelectedModuleId !== data?.lastSelectedModuleId) {
-        update.mutate({
-          id: subject.id,
-          data: {
-            lastSelectedModuleId: subject.lastSelectedModuleId,
-          },
-        });
-      }
+      update.subject.mutate({
+        id: subject.id,
+        data: {
+          lastSelectedModuleId: subject.lastSelectedModuleId,
+        },
+      });
     }, 500);
 
     return () => clearTimeout(timeoutUpdate);
@@ -68,13 +68,28 @@ export const SubjectContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (!subject?.id) return;
-    update.mutate({
+    update.subject.mutate({
       id: subject.id,
       data: {
         updatedAt: new Date(Date.now()),
       },
     });
   }, [subject?.id]);
+
+  useEffect(() => {
+    if (!selectedModule) return;
+
+    const timeoutUpdate = setTimeout(() => {
+      update.module.mutate({
+        id: selectedModule.id,
+        data: {
+          notes: selectedModule.notes!,
+        },
+      });
+    }, 1000);
+
+    return () => clearTimeout(timeoutUpdate);
+  }, [subject]);
 
   return (
     <SubjectContextImpl.Provider
@@ -83,10 +98,7 @@ export const SubjectContextProvider = ({ children }: PropsWithChildren) => {
           value: data!,
           set: setSubject,
         },
-        selectedModule: {
-          value: selectedModule,
-          set: setSelectedModule,
-        },
+        selectedModule,
         isLoading,
       }}
     >
