@@ -95,7 +95,6 @@ Here is what you need to be able to run Sinau locally.
 5. Set up your `.env` file
 
    - Duplicate `.env.example` to `.env`
-   - Use `openssl rand -base64 32` to generate a key and add it under `NEXTAUTH_SECRET` in the `.env` file.
    - Go to [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
    - Go to [OpenAI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
    - Go to [Clerk](https://clerk.com/) and paste your `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to the `.env` file.
@@ -103,7 +102,7 @@ Here is what you need to be able to run Sinau locally.
 6. Run the database migration
 
    ```sh
-   npm run db:generate
+   npm run postinstall
    npm run db:push
    ```
 
