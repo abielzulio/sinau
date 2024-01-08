@@ -132,6 +132,13 @@ Here's how you can contribute:
 </a>
  -->
 
+## TODO
+
+- [ ] **BUGS**: Trigger.dev isn't working on the production (error parsing JSON request/response)
+- [ ] **FEATURE**: Save user chat message history to Upstash (per subject)
+- [ ] **FEATURE**: RAG (video transcript & webscrape) using Pinecone
+- [ ] **ENHANCEMENTS**: Migrate Prisma to Drizzle
+
 ## Author
 
 - Abiel Zulio M ([@abielzulio](https://twitter.com/abielzulio))
