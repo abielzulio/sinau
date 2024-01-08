@@ -5,7 +5,7 @@ import { type PropsWithChildren } from "react";
 
 const NavigationBar = ({ children }: PropsWithChildren) => {
   return (
-    <nav className="fixed z-10 flex w-screen flex-row items-center justify-between bg-off-white py-[18px] pl-[24px] pr-[32px]">
+    <nav className="fixed z-20 flex w-screen flex-row items-center justify-between bg-off-white py-[18px] pl-[24px] pr-[32px]">
       <Link href="/subject" className="flex flex-row items-center gap-[10px]">
         <Image
           src="/brand/sinau-black.svg"
