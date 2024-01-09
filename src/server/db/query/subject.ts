@@ -1,4 +1,3 @@
-import { type Prisma } from "@prisma/client";
 import { type Database } from "../index";
 
 export const subject = {
@@ -9,6 +8,7 @@ export const subject = {
         modules: {
           include: {
             video: true,
+            chat: true,
           },
         },
       },
@@ -46,14 +46,3 @@ export type SubjectWithModulesAndVideo = ReturnType<
 > extends Promise<infer T>
   ? T
   : never;
-
-/* export type SubjectWithModulesAndVideo = Prisma.SubjectGetPayload<{
-  include: {
-    modules: {
-      include: {
-        video: true;
-      };
-    };
-  };
-}>;
- */

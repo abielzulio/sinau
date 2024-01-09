@@ -136,12 +136,12 @@ Here's how you can contribute:
 
 - [ ] **BUGS**: Trigger.dev isn't working on the production (error parsing JSON request/response)
 - [ ] **FEATURE**: Quiz generation
-- [ ] **FEATURE**: Save user chat message history to Redis (Upstash) (per subject)
+- [x] **FEATURE**: Save user chat message history to Redis (Upstash) (per subject)
 - [ ] **FEATURE**: Integrate payment gateway (Lemon Squeezy)
 - [ ] **FEATURE**: RAG (video transcript & webscrape) using Pinecone
 - [ ] **ENHANCEMENT**: Migrate Prisma to Drizzle
 - [ ] **ENHANCEMENT**: Replace landing page demo video with Loom
-- [ ] **ENHANCEMENT**: Deploy our own Redis and PSQL to Fly.io/Digitalocean
+- [x] **ENHANCEMENT**: Deploy our own Redis and PSQL to Fly.io/Digitalocean
 
 ## Author
 
