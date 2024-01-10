@@ -20,13 +20,7 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string(),
     TRIGGER_ID: z.string(),
     TRIGGER_API_KEY: z.string().optional(),
-    TRIGGER_API_URL: z.preprocess(
-      (str) =>
-        process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}/api/trigger`
-          : str,
-      process.env.VERCEL ? z.string() : z.string().url(),
-    ),
+    TRIGGER_API_URL: z.string().url(),
     CLERK_SECRET_KEY: z.string(),
   },
 
