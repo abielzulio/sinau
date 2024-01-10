@@ -249,7 +249,7 @@ export const subjectRouter = createTRPCRouter({
         });
       }
 
-      const videosWithTranscript = await ctx.db.video.findMany({
+      /*       const videosWithTranscript = await ctx.db.video.findMany({
         select: {
           id: true,
           url: true,
@@ -293,7 +293,7 @@ export const subjectRouter = createTRPCRouter({
           });
         }
       }
-
+ */
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
