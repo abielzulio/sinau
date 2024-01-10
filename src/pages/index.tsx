@@ -55,6 +55,7 @@ export default function HomePage() {
               Start Learn Now
             </Button>
           </div>
+          {/** TODO: Replace this with loom  */}
           <div className="relative h-[300px] w-full md:h-[450px] md:w-[900px]">
             <ReactPlayer
               width="100%"
