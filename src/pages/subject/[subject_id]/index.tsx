@@ -99,11 +99,19 @@ const Header = () => {
         id="subject-header"
       >
         <div className="flex flex-col gap-[10px]">
-          <h1 className="text-2xl font-medium capitalize">{subject?.name}</h1>
+          {subject?.name ? (
+            <h1 className="text-2xl font-medium capitalize">{subject?.name}</h1>
+          ) : (
+            <Skeleton className="h-[30px] w-[200px] rounded-md opacity-50" />
+          )}
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center gap-[5px] text-sm opacity-50">
               <Book size={12} />
-              <p>{subject?.modules?.length} modules</p>
+              {subject?.modules ? (
+                <p>{subject?.modules?.length} modules</p>
+              ) : (
+                <Skeleton className="h-[15px] w-[100px] rounded-md opacity-50" />
+              )}
             </div>
             {event.data?.runs.some((run) =>
               run.status.includes(TRIGGER_LOADING_STATUS),
@@ -176,7 +184,7 @@ const SelectedModule = () => {
   const [notes, setNotes] = useState(selectedModule?.notes ?? "");
   const [open, setOpen] = useState(false);
   const readingHeight = useReadingMaterialHeight([selectedModule]);
-  const isRendered = useRendered();
+  const isRendered = useRendered(10);
 
   useEffect(() => {
     if (notes === selectedModule?.notes) return;
@@ -281,9 +289,20 @@ const SelectedModule = () => {
           <div className="sticky top-[100px] flex w-full flex-col items-center gap-[15px] sm:ml-auto sm:flex-row">
             <div className="flex w-full flex-col gap-[5px]">
               <div className="flex items-center">
-                <h2 className="text-xl font-medium">{module?.title}</h2>
+                {module?.title ? (
+                  <h2 className="text-xl font-medium">{module?.title}</h2>
+                ) : (
+                  <Skeleton className="h-[20px] w-[100px] rounded-md opacity-50" />
+                )}
               </div>
-              <p className="text-sm opacity-50">{module?.overview}</p>
+              {module?.overview ? (
+                <p className="text-sm opacity-50">{module?.overview}</p>
+              ) : (
+                <div className="flex flex-col gap-[5px] opacity-50">
+                  <Skeleton className="h-[15px] w-2/3 rounded-md" />
+                  <Skeleton className="h-[15px] w-2/3 rounded-md" />
+                </div>
+              )}
             </div>
 
             <div className="flex w-full items-center gap-[10px] sm:w-fit">
@@ -312,7 +331,11 @@ const SelectedModule = () => {
               setNotes(e.target.value);
             }}
             className="h-full w-full p-[16px] text-sm placeholder:text-sm"
-            placeholder={`Add your note about "${selectedModule?.title}" here`}
+            placeholder={
+              selectedModule?.title
+                ? "Add your note here"
+                : `Add your note about "${selectedModule?.title}" here`
+            }
           />
         </Resizeable.Panel>
         <Resizeable.Handle withHandle />
