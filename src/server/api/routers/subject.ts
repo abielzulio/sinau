@@ -238,7 +238,7 @@ export const subjectRouter = createTRPCRouter({
 
       // TODO: Handle if video already exist but the module reading material isn't exist
       if (videosWithNoTranscript.length > 0) {
-        void trigger.sendEvent({
+        await trigger.sendEvent({
           name: "video.transcripter",
           payload: {
             subject: data.name,
@@ -281,7 +281,7 @@ export const subjectRouter = createTRPCRouter({
 
       if (videosWithTranscript.length > 0) {
         for (const { transcript, modules } of videosWithTranscript) {
-          void trigger.sendEvent({
+          await trigger.sendEvent({
             name: "module.generator",
             payload: {
               modules,
