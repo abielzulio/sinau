@@ -1,8 +1,18 @@
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
+import useDocumentVisibility from "./ui/useDocumentVisibility";
 
 const useFetchSubject = (id: string) => {
   const { data, isLoading } = api.subject.getById.useQuery({ id });
+  const { push } = useRouter();
+
+  useDocumentVisibility({
+    onVisible: async () => {
+      if (data) return;
+      // TODO: Router to 404
+      await push("/subject");
+    },
+  });
 
   return {
     data,
