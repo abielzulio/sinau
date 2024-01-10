@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, type DependencyList } from "react";
 
 const useDocumentVisibility = (props: {
-  onVisible?: () => Promise<void>;
-  onHidden?: () => Promise<void>;
-  deps?: Array<never>;
+  onVisible?: () => Promise<void> | void;
+  onHidden?: () => Promise<void> | void;
+  deps?: DependencyList;
 }) => {
   useEffect(() => {
     const onFocus = () => {
