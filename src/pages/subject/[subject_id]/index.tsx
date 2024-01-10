@@ -102,7 +102,7 @@ const Header = () => {
           {subject?.name ? (
             <h1 className="text-2xl font-medium capitalize">{subject?.name}</h1>
           ) : (
-            <Skeleton className="h-[30px] w-[200px] rounded-md opacity-50" />
+            <Skeleton className="h-[35px] w-[200px] rounded-md opacity-50" />
           )}
           <div className="flex items-center gap-[10px]">
             <div className="flex items-center gap-[5px] text-sm opacity-50">
@@ -292,7 +292,7 @@ const SelectedModule = () => {
                 {module?.title ? (
                   <h2 className="text-xl font-medium">{module?.title}</h2>
                 ) : (
-                  <Skeleton className="h-[20px] w-[100px] rounded-md opacity-50" />
+                  <Skeleton className="h-[25px] w-[100px] rounded-md opacity-50" />
                 )}
               </div>
               {module?.overview ? (
