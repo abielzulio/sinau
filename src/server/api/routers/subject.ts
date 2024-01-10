@@ -238,7 +238,7 @@ export const subjectRouter = createTRPCRouter({
 
       // TODO: Handle if video already exist but the module reading material isn't exist
 
-      if (videosWithNoTranscript.length > 0) {
+      /*       if (videosWithNoTranscript.length > 0) {
         await trigger.sendEvent({
           name: "video.transcripter",
           payload: {
@@ -249,7 +249,7 @@ export const subjectRouter = createTRPCRouter({
           id: data.id,
         });
       }
-
+ */
       const videosWithTranscript = await ctx.db.video.findMany({
         select: {
           id: true,
@@ -280,7 +280,7 @@ export const subjectRouter = createTRPCRouter({
         },
       });
 
-      if (videosWithTranscript.length > 0) {
+      /*       if (videosWithTranscript.length > 0) {
         for (const { transcript, modules } of videosWithTranscript) {
           await trigger.sendEvent({
             name: "module.generator",
@@ -294,7 +294,7 @@ export const subjectRouter = createTRPCRouter({
           });
         }
       }
-
+ */
       posthog?.capture({
         distinctId:
           ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
