@@ -54,9 +54,8 @@ export default function SubjectsPage() {
     create: api.subject.create.useMutation({
       onSuccess: async (id) => {
         setShowModal(false);
-        console.log("done", id);
-        /*         toast.success("Learning path is created");
-        await push(`/subject/${id}`); */
+        toast.success("Learning path is created");
+        await push(`/subject/${id}`);
       },
       onError: (error) => handleClientError(error.message),
     }),
