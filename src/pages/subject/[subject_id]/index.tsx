@@ -333,8 +333,8 @@ const SelectedModule = () => {
             className="h-full w-full p-[16px] text-sm placeholder:text-sm"
             placeholder={
               selectedModule?.title
-                ? "Add your note here"
-                : `Add your note about "${selectedModule?.title}" here`
+                ? `Add your note about "${selectedModule?.title}" here`
+                : "Add your note here"
             }
           />
         </Resizeable.Panel>
