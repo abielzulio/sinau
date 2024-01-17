@@ -41,14 +41,3 @@ export type SubjectWithModulesAndVideo = ReturnType<
 > extends Promise<infer T>
   ? T
   : never;
-
-/* export type SubjectWithModulesAndVideo = Prisma.SubjectGetPayload<{
-  include: {
-    modules: {
-      include: {
-        video: true;
-      };
-    };
-  };
-}>;
- */

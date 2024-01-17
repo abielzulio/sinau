@@ -276,7 +276,7 @@ export default function SubjectsPage() {
             <p className="opacity-50">{subject.all.data?.length} subjects</p>
             <div className="grid grid-cols-1 gap-[30px] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {subject.all.data?.map((subject) => (
-                <Link key={subject.id} href={`/subject/${subject.id}`}>
+                <Link key={subject.id} href={`/subject/${subject.id}`} prefetch>
                   <div className="relative flex h-[350px] w-full flex-col overflow-hidden rounded-xl border-[1.5px]  border-black/5 bg-white text-left shadow-lg hover:cursor-pointer">
                     <Image
                       src={subject.cover}

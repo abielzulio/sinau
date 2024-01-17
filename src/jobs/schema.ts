@@ -22,7 +22,7 @@ export const videoTranscripterSchema = z.object({
       modules: z.array(
         z.object({
           id: z.string(),
-          overview: z.string(),
+          overview: z.string().nullable(),
           title: z.string(),
         }),
       ),

@@ -11,6 +11,7 @@ import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
+import NextProgress from "next-progress";
 
 if (
   typeof window !== "undefined" &&
@@ -42,6 +43,7 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   return (
     <>
       <Head />
+      <NextProgress color={"#000"} options={{ showSpinner: false }} />
       <Toaster richColors closeButton />
       <ClerkProvider {...pageProps}>
         <ClerkLoading>

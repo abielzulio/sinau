@@ -5,11 +5,8 @@ const useRendered = (delay?: number) => {
 
   useEffect(() => {
     if (!delay) {
-      const timeout = setTimeout(() => {
-        setRendered(true);
-      }, 10);
-
-      return () => clearTimeout(timeout);
+      setRendered(true);
+      return;
     }
 
     const timeout = setTimeout(() => {

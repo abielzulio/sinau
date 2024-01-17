@@ -27,14 +27,15 @@ model Subject {
 }
 
 model Module {
-  id          String   @id @default(cuid())
-  order       Int
-  runId       String?
-  notes       String?
-  title       String
-  overview    String?
-  reading     String?
-  references  String?
+  id         String  @id @default(cuid())
+  order      Int
+  runId      String?
+  notes      String?
+  title      String
+  overview   String?
+  reading    String?
+  references String?
+
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -44,6 +45,9 @@ model Module {
 
   subject   Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subjectId String?
+
+  chat   Chat[]
+  chatId String?
 }
 
 model Video {
@@ -55,4 +59,15 @@ model Video {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   modules    Module[]
+}
+
+model Chat {
+  id        String   @id
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+  Module    Module?  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId  String?
+
+  @@unique([id])
 }
