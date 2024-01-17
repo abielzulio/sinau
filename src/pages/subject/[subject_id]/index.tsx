@@ -184,7 +184,7 @@ const SelectedModule = () => {
   const [notes, setNotes] = useState(selectedModule?.notes ?? "");
   const [open, setOpen] = useState(false);
   const readingHeight = useReadingMaterialHeight([selectedModule]);
-  const isRendered = useRendered(10);
+  const isRendered = useRendered();
 
   useEffect(() => {
     if (notes === selectedModule?.notes) return;
@@ -341,16 +341,19 @@ const SelectedModule = () => {
         <Resizeable.Handle withHandle />
         <Resizeable.Panel style={{ overflowY: "scroll" }} defaultSize={50}>
           <div className="flex flex-col gap-[18px] p-[16px]">
-            {isRendered ? (
+            {isRendered || module?.video.url ? (
               <ReactPlayer
                 image={module?.video.cover}
                 pip
                 controls
                 style={{ height: "600px", width: "100%" }}
+                fallback={
+                  <Skeleton className="h-[400px] w-[200px] rounded-md" />
+                }
                 url={module?.video.url}
               />
             ) : (
-              <Skeleton className="h-[400px] w-full rounded-md" />
+              <Skeleton className="h-[400px] w-[200px] rounded-md" />
             )}
             {!module?.reading ? (
               <div className="my-[15px] flex flex-col gap-[15px] opacity-50">
