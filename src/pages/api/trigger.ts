@@ -11,8 +11,8 @@ import "@/jobs";
 //this route is used to send and receive data with Trigger.dev
 const { handler, config: triggerConfig } = createPagesRoute(trigger);
 export const config = {
+  ...triggerConfig,
   maxDuration: 300,
-  ...triggerConfig.api,
 };
 
 export default handler;
