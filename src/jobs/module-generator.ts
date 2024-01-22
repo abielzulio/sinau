@@ -1,8 +1,10 @@
 import duckduckgo from "@/libs/duckduckgo";
 import { trigger as client, openai } from "@/libs/trigger";
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { moduleGeneratorSchema } from "./schema";
 import { eventTrigger } from "@trigger.dev/sdk";
+import { subjectModule } from "drizzle/schema";
+import { eq } from "drizzle-orm";
 
 client.defineJob({
   id: "module-generator",
@@ -58,13 +60,13 @@ client.defineJob({
       );
 
       await io.runTask(`save-module-${id}`, async () => {
-        return await db.module.update({
-          where: { id },
-          data: {
+        return await db
+          .update(subjectModule)
+          .set({
             reading: response.choices[0]?.message.content,
             references: JSON.stringify(references),
-          },
-        });
+          })
+          .where(eq(subjectModule.id, id));
       });
 
       await io.logger.info(`[module-generator] DONE: ${id}-${title}`);

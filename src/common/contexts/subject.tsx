@@ -1,5 +1,5 @@
 import { type SubjectWithModulesAndVideo } from "@/server/db/query";
-import { type ModuleWithVideo } from "@/server/db/query/module";
+import { type SubjectModuleWithVideo } from "@/server/db/query/module";
 import { type Maybe, type ValueAndSet } from "@/type";
 import { api } from "@/utils/api";
 import {
@@ -13,7 +13,7 @@ import { useSubjectRouter } from "../hooks/subject";
 
 interface SubjectContextType {
   subject: ValueAndSet<Maybe<SubjectWithModulesAndVideo>>;
-  selectedModule: Maybe<typeof ModuleWithVideo>;
+  selectedModule: SubjectModuleWithVideo;
   isLoading: boolean;
 }
 

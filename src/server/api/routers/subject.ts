@@ -8,6 +8,7 @@ import posthog from "@/libs/posthog";
 import { trigger } from "@/libs/trigger";
 import youtube from "@/libs/youtube";
 import { subject } from "@/server/db/query";
+import { subject as subjectSchema } from "drizzle/schema";
 import { type Module } from "@/type";
 import { TRPCError } from "@trpc/server";
 import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -31,9 +32,18 @@ export const subjectRouter = createTRPCRouter({
   generate: protectedProcedure
     .input(z.object({ subject: z.string().min(1) }))
     .mutation(async ({ input: { subject }, ctx }) => {
-      const exist = await ctx.db.subject.findFirst({
-        select: { id: true },
-        where: { name: subject, userId: ctx.auth.userId },
+      if (!ctx.auth.user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: `You're not authorized to do this action`,
+        });
+      }
+
+      const exist = await ctx.db.query.subject.findFirst({
+        columns: { id: true },
+        where: (subjectSchema, { eq }) =>
+          eq(subjectSchema.name, subject) &&
+          eq(subjectSchema.userId, ctx.auth.user!.id),
       });
 
       if (exist) {
@@ -161,14 +171,12 @@ export const subjectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input: { subject, modules } }) => {
       const cover = await duckduckgo.getImage(subject);
 
-      const data = await ctx.db.subject.create({
-        data: {
-          name: subject,
-          cover,
-          lastActiveModuleId: "",
-          lastSelectedModuleId: "",
-          userId: ctx.auth.userId,
-        },
+      const data = await ctx.db.insert(subjectSchema).values({
+        name: subject,
+        cover,
+        lastActiveModuleId: "",
+        lastSelectedModuleId: "",
+        userId: ctx.auth.userId,
       });
 
       for (const [id, { title, overview }] of modules.entries()) {

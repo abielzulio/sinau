@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1705481319874,
+      "tag": "0000_stiff_vivisector",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1705483466950,
+      "tag": "0001_flashy_salo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1705486716463,
+      "tag": "0002_simple_lethal_legion",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import openai from "@/libs/openai";
 import { trigger as client } from "@/libs/trigger";
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { eventTrigger } from "@trigger.dev/sdk";
 import ytdl from "ytdl-core";
 import { videoTranscripterSchema } from "./schema";

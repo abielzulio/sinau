@@ -1,13 +1,15 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { chat } from "drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export const chatRouter = createTRPCRouter({
   getByModuleId: protectedProcedure
     .input(z.object({ moduleId: z.string().optional() }))
     .query(async ({ ctx, input: { moduleId } }) => {
-      return await ctx.db.chat.findMany({
-        where: { moduleId },
-        orderBy: { createdAt: "asc" },
+      if (!moduleId) return;
+      return await ctx.db.query.chat.findMany({
+        where: (chat, { eq }) => eq(chat.moduleId, moduleId),
       });
     }),
   post: protectedProcedure
@@ -25,21 +27,22 @@ export const chatRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input: { data } }) => {
       return data.map(async (d) => {
-        return await ctx.db.chat.upsert({
-          where: {
-            id: d.id,
-          },
-          update: {
-            role: d.role,
-            content: d.content,
-          },
-          create: {
+        return await ctx.db
+          .insert(chat)
+          .values({
             id: d.id,
             moduleId: d.moduleId,
             role: d.role,
             content: d.content,
-          },
-        });
+          })
+          .onConflictDoUpdate({
+            target: chat.id,
+            set: {
+              role: d.role,
+              content: d.content,
+            },
+            where: eq(chat.id, d.id),
+          });
       });
     }),
 });

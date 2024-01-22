@@ -1,14 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { subjectModule } from "drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export const moduleRouter = createTRPCRouter({
-  getById: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input: { id } }) => {
-      return await ctx.db.module.findUnique({
-        where: { id },
-      });
-    }),
   update: protectedProcedure
     .input(
       z.object({
@@ -19,13 +14,11 @@ export const moduleRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.module.update({
-        where: {
-          id: input.id,
-        },
-        data: {
+      return await ctx.db
+        .update(subjectModule)
+        .set({
           notes: input.data.notes,
-        },
-      });
+        })
+        .where(eq(subjectModule.id, input.id));
     }),
 });

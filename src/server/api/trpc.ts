@@ -7,7 +7,7 @@
  * need to use are documented accordingly near the end.
  */
 
-import { db } from "@/server/db";
+import db from "@/server/db";
 import {
   getAuth,
   type SignedInAuthObject,

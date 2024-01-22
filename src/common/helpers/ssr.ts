@@ -1,4 +1,4 @@
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { clerkClient } from "@clerk/nextjs";
 import { getAuth } from "@clerk/nextjs/server";
 import type {
@@ -31,11 +31,12 @@ export const withSubject = () => {
       return redirectToAuth;
     }
 
-    const userHaveSubject = await db.subject.findFirst({
-      where: {
-        id: subject_id,
-        userId: user.id,
+    const userHaveSubject = await db.query.subject.findFirst({
+      columns: {
+        id: true,
       },
+      where: (subject, { eq }) =>
+        eq(subject.id, subject_id) && eq(subject.userId, user.id),
     });
 
     if (!userHaveSubject) return redirectTo("/subject");
