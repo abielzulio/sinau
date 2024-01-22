@@ -1,17 +1,15 @@
-import { type Prisma } from "@prisma/client";
-import { type Database } from "../index";
+import { eq } from "drizzle-orm";
+import Database, { Subject, Video, Module } from "../index";
 
-export const subjectModule = {
-  getById: async (db: Database, id: string) => {
-    const data = await db.module.findUnique({
-      where: { id },
-      include: {
-        video: true
-      },
-    });
+export const ModuleWithVideo = {
+  getById: async (db: typeof Database, id: string): Promise<any[]> => {
+    const data = await db
+      .select()
+      .from(Subject)
+      .leftJoin(Module, eq(Subject.id, Module.id))
+      .leftJoin(Video, eq(Module.videoId, Video.id))
+      .where(eq(Subject.id, id));
 
-    return data
+    return data;
   },
 };
-
-export type ModuleWithVideo = Prisma.PromiseReturnType<typeof subjectModule["getById"]>

@@ -13,7 +13,7 @@ import { useSubjectRouter } from "../hooks/subject";
 
 interface SubjectContextType {
   subject: ValueAndSet<Maybe<SubjectWithModulesAndVideo>>;
-  selectedModule: Maybe<ModuleWithVideo>;
+  selectedModule: Maybe<typeof ModuleWithVideo>;
   isLoading: boolean;
 }
 
