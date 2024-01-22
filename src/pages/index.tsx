@@ -3,12 +3,20 @@ import { Image } from "@/common/components/ui/image";
 import { useUser } from "@/common/hooks/user";
 import { BookOpenText, MessagesSquare, MonitorPlay, User } from "lucide-react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import Balancer from "react-wrap-balancer";
 
 export default function HomePage() {
   const { isAuthenticated } = useUser();
   const { push } = useRouter();
+  const [isRendered, setIsRendered] = useState(false);
+
+  useEffect(() => {
+    if (isRendered) return;
+    setIsRendered(true);
+  }, []);
+
   return (
     <main className="min-w-screen flex h-fit min-h-screen flex-col bg-gradient-to-b from-off-white to-indigo-200">
       <nav className="mx-auto flex w-full flex-row items-center justify-between px-[18px] py-[18px] md:w-3/4 md:px-[24px]">
@@ -22,7 +30,7 @@ export default function HomePage() {
         </div>
         <div className="flex flex-row items-center gap-[15px]">
           {isAuthenticated ? (
-            <Button>Open Dashboard</Button>
+            <Button onClick={() => push("/subject")}>Open Dashboard</Button>
           ) : (
             <Button
               variant={"secondary"}
@@ -56,15 +64,17 @@ export default function HomePage() {
             </Button>
           </div>
           {/** TODO: Replace this with loom  */}
-          <div className="relative h-[300px] w-full md:h-[450px] md:w-[900px]">
-            <ReactPlayer
-              width="100%"
-              height="100%"
-              controls
-              url="https://www.youtube.com/watch?v=seqLW_jFnCs"
-              light={<Image src="/sinau-app.png" alt="Sinau Logo" />}
-            />
-          </div>
+          {isRendered ? (
+            <div className="relative h-[300px] w-full md:h-[450px] md:w-[900px]">
+              <ReactPlayer
+                width="100%"
+                height="100%"
+                controls
+                url="https://www.youtube.com/watch?v=seqLW_jFnCs"
+                light={<Image src="/sinau-app.png" alt="Sinau Logo" />}
+              />
+            </div>
+          ) : null}
 
           <div className="grid w-full grid-rows-2 gap-[30px] px-[24px] text-left text-[14px] opacity-50 md:w-[80vw] md:grid-cols-2 xl:w-[50vw]">
             <div className="flex flex-col gap-[3px]">
