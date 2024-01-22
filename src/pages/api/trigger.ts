@@ -9,10 +9,12 @@ import "@/jobs";
 }; */
 
 //this route is used to send and receive data with Trigger.dev
-const { handler, config: triggerConfig } = createPagesRoute(trigger);
-export const config = {
-  ...triggerConfig,
-  maxDuration: 300,
-};
+const { handler } = createPagesRoute(trigger);
 
+export const config = {
+  maxDuration: 300,
+  api: {
+    bodyParser: false,
+  },
+};
 export default handler;
