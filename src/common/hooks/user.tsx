@@ -1,10 +1,10 @@
-import { useUser as useClerkAuth } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 
 export const useUser = () => {
-  const { isSignedIn, user, isLoaded } = useClerkAuth();
+  const { data: sessionData, status } = useSession();
   return {
-    user: isSignedIn ? user : null,
-    isLoading: !isLoaded,
-    isAuthenticated: isSignedIn,
+    user: sessionData?.user,
+    isLoading: status === "loading",
+    isAuthenticated: status === "authenticated",
   };
 };
