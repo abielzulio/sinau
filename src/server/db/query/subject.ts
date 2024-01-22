@@ -1,36 +1,41 @@
-import { eq, desc } from "drizzle-orm";
-import Database, { Subject, Video, Module } from "../index";
+import { type Database } from "../index";
 
 export const subject = {
-  getById: async (db: typeof Database, id: string) => {
-    const data = await db
-      .select()
-      .from(Subject)
-      .leftJoin(Module, eq(Subject.id, Module.id))
-      .leftJoin(Video, eq(Module.videoId, Video.id))
-      .where(eq(Subject.id, id));
+  getById: async (db: Database, id: string) => {
+    const data = await db.subject.findUnique({
+      where: { id },
+      include: {
+        modules: {
+          include: {
+            video: true,
+            chat: true,
+          },
+        },
+      },
+    });
 
     return data;
   },
-
-  getAll: async (db: typeof Database, userId: string) => {
-    const data = await db
-      .select({
-        id: Subject.id,
-        name: Subject.name,
-        cover: Subject.cover,
-        isCompleted: Subject.isCompleted,
-        createdAt: Subject.createdAt,
-        updatedAt: Subject.updatedAt,
+  getAll: async (db: Database, userId: string, page: number) => {
+    const data = await db.subject.findMany({
+      select: {
+        id: true,
+        name: true,
+        cover: true,
+        isCompleted: true,
+        createdAt: true,
+        updatedAt: true,
         modules: {
-          id: Module.id,
+          select: {
+            id: true,
+          },
         },
-      })
-      .from(Subject)
-      .leftJoin(Module, eq(Subject.id, Module.id))
-      .leftJoin(Video, eq(Module.videoId, Video.id))
-      .where(eq(Subject.userId, userId))
-      .orderBy(desc(Subject.createdAt));
+      },
+      where: { userId },
+      skip: page * 10,
+      take: 10,
+      orderBy: { createdAt: "desc" },
+    });
 
     return data;
   },
