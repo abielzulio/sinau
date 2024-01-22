@@ -1,6 +1,5 @@
+import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { clerkClient } from "@clerk/nextjs";
-import { getAuth } from "@clerk/nextjs/server";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -13,7 +12,38 @@ export const redirectTo = (path: string) => ({
   },
 });
 
-export const redirectToAuth = redirectTo("/sign-in");
+export const redirectToAuth = {
+  redirect: {
+    destination: "/sign-in",
+    permanent: false,
+  },
+};
+
+const handleAuth = async (ctx: GetServerSidePropsContext) => {
+  const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+
+  if (!session) {
+    return redirectToAuth;
+  }
+
+  if (ctx.req.url === "/") {
+    return redirectTo("/subject");
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export type WithAuthType = InferGetServerSidePropsType<
+  ReturnType<typeof withAuth>
+>;
+
+export const withAuth = () => {
+  return async (ctx: GetServerSidePropsContext) => {
+    return await handleAuth(ctx);
+  };
+};
 
 export type WithSubjectType = InferGetServerSidePropsType<
   ReturnType<typeof withSubject>
@@ -21,20 +51,15 @@ export type WithSubjectType = InferGetServerSidePropsType<
 
 export const withSubject = () => {
   return async (ctx: GetServerSidePropsContext) => {
-    const { subject_id } = ctx.params as { subject_id: string };
+    const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
 
-    const { userId } = getAuth(ctx.req);
-
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-
-    if (!user?.id) {
+    if (!session) {
       return redirectToAuth;
     }
 
     const userHaveSubject = await db.subject.findFirst({
       where: {
-        id: subject_id,
-        userId: user.id,
+        userId: session.user.id,
       },
     });
 

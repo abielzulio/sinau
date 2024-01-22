@@ -33,7 +33,7 @@ export const subjectRouter = createTRPCRouter({
     .mutation(async ({ input: { subject }, ctx }) => {
       const exist = await ctx.db.subject.findFirst({
         select: { id: true },
-        where: { name: subject, userId: ctx.auth.userId },
+        where: { name: subject, userId: ctx.session.user.id },
       });
 
       if (exist) {
@@ -71,8 +71,7 @@ export const subjectRouter = createTRPCRouter({
       }
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: generate initial subject module",
         properties: {
           $subject: subject,
@@ -135,8 +134,7 @@ export const subjectRouter = createTRPCRouter({
       }
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: regenerate initial subject module",
         properties: {
           $subject: subject,
@@ -167,7 +165,7 @@ export const subjectRouter = createTRPCRouter({
           cover,
           lastActiveModuleId: "",
           lastSelectedModuleId: "",
-          userId: ctx.auth.userId,
+          User: { connect: { id: ctx.session.user.id } },
         },
       });
 
@@ -243,7 +241,7 @@ export const subjectRouter = createTRPCRouter({
           payload: {
             subject: data.name,
             videos: videosWithNoTranscript,
-            userId: ctx.auth.userId,
+            userId: ctx.session.user.id,
           },
           id: data.id,
         });
@@ -287,7 +285,7 @@ export const subjectRouter = createTRPCRouter({
               modules,
               transcript: transcript,
               subject: data.name,
-              userId: ctx.auth.userId,
+              userId: ctx.session.user.id,
             },
             source: env.TRIGGER_ID,
           });
@@ -295,8 +293,7 @@ export const subjectRouter = createTRPCRouter({
       }
  */
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: create module",
         properties: {
           $subject: subject,
@@ -309,7 +306,7 @@ export const subjectRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ page: z.number().min(0) }))
     .query(async ({ ctx, input: { page = 0 } }) => {
-      return await subject.getAll(ctx.db, ctx.auth.userId, page);
+      return await subject.getAll(ctx.db, ctx.session.user.id, page);
     }),
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -340,8 +337,7 @@ export const subjectRouter = createTRPCRouter({
       const data = await ctx.db.subject.delete({ where: { id } });
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: delete",
         properties: {
           $subject: data.name,

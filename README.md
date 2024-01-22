@@ -43,7 +43,7 @@ Sinau is an open-source generative learning path platform to help anyone learn a
 - [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
 - [Next.js](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
-- [Clerk](https://clerk.com/) (authentication)
+- [Auth.js](https://authjs.dev/)
 - [Neon](https://neon.tech) (serverlesss PostgreSQL)
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)
@@ -64,7 +64,7 @@ Here is what you need to be able to run Sinau locally.
 - Docker
 - [Trigger.dev](https://trigger.dev/) account
 - [OpenAI](https://openai.com/) account
-- [Clerk](https://clerk.com/) account
+- [Google Cloud](https://cloud.google.com/) account (for Google authentication provider)
 
 ### Setup
 
@@ -97,7 +97,7 @@ Here is what you need to be able to run Sinau locally.
    - Duplicate `.env.example` to `.env`
    - Go to [trigger.dev](https://trigger.dev/) and paste your `TRIGGER_API_KEY`, `TRIGGER_API_URL`,`TRIGGER_ID`, and `NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY` to the `.env` file.
    - Go to [OpenAI](https://openai.com/) and paste your `OPENAI_API_KEY` to the `.env` file.
-   - Go to [Clerk](https://clerk.com/) and paste your `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to the `.env` file.
+   - Go to [Google Cloud](https://cloud.google.com/) and paste your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to the `.env` file.
 
 6. Run the database migration
 
@@ -136,12 +136,9 @@ Here's how you can contribute:
 
 - [ ] **BUGS**: Trigger.dev isn't working on the production (error parsing JSON request/response)
 - [ ] **FEATURE**: Quiz generation
-- [x] **FEATURE**: Save user chat message history to Redis (Upstash) (per subject)
 - [ ] **FEATURE**: Integrate payment gateway (Lemon Squeezy)
 - [ ] **FEATURE**: RAG (video transcript & webscrape) using Pinecone
-- [ ] **ENHANCEMENT**: Migrate Prisma to Drizzle
 - [ ] **ENHANCEMENT**: Replace landing page demo video with Loom
-- [x] **ENHANCEMENT**: Deploy our own Redis and PSQL to Fly.io/Digitalocean
 
 ## Author
 
@@ -158,7 +155,7 @@ Special thanks to these amazing projects which help power Sinau:
 - [Vercel](https://vercel.com/?utm_source=sinau&utm_campaign=oss)
 - [Next.js](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
-- [Clerk](https://clerk.com/)
+- [Auth.js](https://authjs.dev/)
 - [Neon](https://neon.tech)
 - [Prisma.io](https://prisma.io/)
 - [OpenAI](https://openai.com/)

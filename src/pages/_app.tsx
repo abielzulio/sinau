@@ -2,16 +2,16 @@ import Head from "@/common/components/head";
 import { env } from "@/env";
 import "@/styles/globals.css";
 import { api } from "@/utils/api";
-import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import { TriggerProvider } from "@trigger.dev/react";
+import { type Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import NextProgress from "next-progress";
 import { type AppType } from "next/app";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
-import NextProgress from "next-progress";
 
 if (
   typeof window !== "undefined" &&
@@ -26,7 +26,10 @@ if (
   });
 }
 
-const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -45,32 +48,17 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
       <Head />
       <NextProgress color={"#000"} options={{ showSpinner: false }} />
       <Toaster richColors closeButton />
-      <ClerkProvider {...pageProps}>
-        <ClerkLoading>
-          <main className="flex h-screen w-screen bg-off-white">
-            <Image
-              src="/brand/sinau-black.svg"
-              alt="Sinau"
-              width={48}
-              height={48}
-              className="mx-auto my-auto animate-pulse opacity-50"
-            />
-          </main>
-        </ClerkLoading>
-        <ClerkLoaded>
-          <TriggerProvider
-            publicApiKey={env.NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY}
-          >
-            {env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true" ? (
-              <PostHogProvider client={posthog}>
-                <Component {...pageProps} />
-              </PostHogProvider>
-            ) : (
+      <SessionProvider session={session}>
+        <TriggerProvider publicApiKey={env.NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY}>
+          {env.NEXT_PUBLIC_SINAU_ENABLE_ANALYTICS === "true" ? (
+            <PostHogProvider client={posthog}>
               <Component {...pageProps} />
-            )}
-          </TriggerProvider>
-        </ClerkLoaded>
-      </ClerkProvider>
+            </PostHogProvider>
+          ) : (
+            <Component {...pageProps} />
+          )}
+        </TriggerProvider>
+      </SessionProvider>
     </>
   );
 };
