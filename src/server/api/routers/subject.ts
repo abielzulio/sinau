@@ -33,7 +33,7 @@ export const subjectRouter = createTRPCRouter({
     .mutation(async ({ input: { subject }, ctx }) => {
       const exist = await ctx.db.subject.findFirst({
         select: { id: true },
-        where: { name: subject, userId: ctx.auth.userId },
+        where: { name: subject, userId: ctx.session.user.id },
       });
 
       if (exist) {
@@ -71,8 +71,7 @@ export const subjectRouter = createTRPCRouter({
       }
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: generate initial subject module",
         properties: {
           $subject: subject,
@@ -135,8 +134,7 @@ export const subjectRouter = createTRPCRouter({
       }
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: regenerate initial subject module",
         properties: {
           $subject: subject,
@@ -295,8 +293,7 @@ export const subjectRouter = createTRPCRouter({
       }
  */
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: create module",
         properties: {
           $subject: subject,
@@ -340,8 +337,7 @@ export const subjectRouter = createTRPCRouter({
       const data = await ctx.db.subject.delete({ where: { id } });
 
       posthog?.capture({
-        distinctId:
-          ctx.auth.user?.emailAddresses[0]?.emailAddress ?? ctx.auth.userId,
+        distinctId: ctx.session.user.email ?? ctx.session.user.id,
         event: "Subject: delete",
         properties: {
           $subject: data.name,

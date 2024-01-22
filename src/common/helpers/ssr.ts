@@ -1,4 +1,5 @@
 import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -50,20 +51,15 @@ export type WithSubjectType = InferGetServerSidePropsType<
 
 export const withSubject = () => {
   return async (ctx: GetServerSidePropsContext) => {
-    const { subject_id } = ctx.params as { subject_id: string };
+    const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
 
-    const { userId } = getAuth(ctx.req);
-
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-
-    if (!user?.id) {
+    if (!session) {
       return redirectToAuth;
     }
 
     const userHaveSubject = await db.subject.findFirst({
       where: {
-        id: subject_id,
-        userId: user.id,
+        userId: session.user.id,
       },
     });
 
