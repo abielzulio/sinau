@@ -236,19 +236,15 @@ export const subjectRouter = createTRPCRouter({
 
       // TODO: Handle if video already exist but the module reading material isn't exist
       if (videosWithNoTranscript.length > 0) {
-        try {
-          await trigger.sendEvent({
-            name: "video.transcripter",
-            payload: {
-              subject: data.name,
-              videos: videosWithNoTranscript,
-              userId: ctx.session.user.id,
-            },
-            id: data.id,
-          });
-        } catch (e) {
-          console.log(e);
-        }
+        await trigger.sendEvent({
+          name: "video.transcripter",
+          payload: {
+            subject: data.name,
+            videos: videosWithNoTranscript,
+            userId: ctx.session.user.id,
+          },
+          id: data.id,
+        });
       }
 
       /*       const videosWithTranscript = await ctx.db.video.findMany({
