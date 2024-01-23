@@ -2,20 +2,24 @@ import { trigger } from "@/libs/trigger";
 import { getServerAuthSession } from "@/server/auth";
 import { type NextApiRequest, type NextApiResponse } from "next";
 
-interface Request extends NextApiRequest {
-  body: {
+interface Payload {
+  id: string;
+  subject: string;
+  videos: Array<{
     id: string;
-    subject: string;
-    videos: Array<{
-      id: string;
-      title: string | null;
-      overview: string;
-    }>;
-    userId: string;
-  };
+    title: string | null;
+    overview: string;
+  }>;
+  userId: string;
+}
+interface Request extends NextApiRequest {
+  body: Payload;
 }
 
-export default async function handler(req: Request, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     if (req.method !== "POST")
       return res.status(404).json({ message: "Method not allowed" });
@@ -24,7 +28,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
 
     if (!session) return res.status(401).json({ message: "Unauthorized" });
 
-    const { id, videos, userId, subject } = req.body;
+    const { id, videos, userId, subject } = JSON.parse(req.body) as Payload;
 
     if (!id) return res.status(400).json({ message: `"id" is required` });
 
