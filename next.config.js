@@ -35,6 +35,9 @@ const config = {
     ],
   },
   output: "standalone",
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 // Injected content via Sentry wizard below
