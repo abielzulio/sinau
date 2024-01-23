@@ -1,7 +1,9 @@
 import { Button } from "@/common/components/ui/button";
 import { Image } from "@/common/components/ui/image";
 import { useUser } from "@/common/hooks/user";
+import { getServerAuthSession } from "@/server/auth";
 import { BookOpenText, MessagesSquare, MonitorPlay, User } from "lucide-react";
+import { type GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
@@ -103,3 +105,20 @@ export default function HomePage() {
     </main>
   );
 }
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getServerAuthSession({ req: ctx.req, res: ctx.res });
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/subject",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
