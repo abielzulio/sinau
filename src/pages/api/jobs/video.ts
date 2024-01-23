@@ -47,8 +47,11 @@ export default async function handler(req: Request, res: NextApiResponse) {
       id,
     });
 
-    return res.status(200).json({ message: "ok" });
+    console.log(event);
+
+    return res.status(200).json({ message: event.name });
   } catch (e) {
+    console.error(e);
     return res.status(500).json({
       message: e instanceof Error ? e.message : JSON.stringify(e),
     });
