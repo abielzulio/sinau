@@ -248,10 +248,11 @@ export const subjectRouter = createTRPCRouter({
           });
           console.log("Trigger.dev sent event", event);
         } catch (error) {
-          console.error(
-            "Trigger.dev sent event error",
-            error instanceof Error ? error.message : JSON.stringify(error),
-          );
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              error instanceof Error ? error.message : JSON.stringify(error),
+          });
         }
       }
 
