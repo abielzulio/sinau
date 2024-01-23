@@ -12,7 +12,7 @@ import "@/jobs";
 const { handler } = createPagesRoute(trigger);
 
 export const config = {
-  maxDuration: 300,
+  /*   maxDuration: 300, */
   api: {
     bodyParser: false,
   },
