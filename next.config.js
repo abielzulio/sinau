@@ -34,6 +34,7 @@ const config = {
       },
     ],
   },
+  output: "standalone",
 };
 
 // Injected content via Sentry wizard below
