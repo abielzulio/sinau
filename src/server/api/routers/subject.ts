@@ -245,7 +245,7 @@ export const subjectRouter = createTRPCRouter({
             userId: ctx.session.user.id,
           };
 
-          /*           const event = await trigger.sendEvent({
+          const event = await trigger.sendEvent({
             name: "video.transcripter",
             payload: {
               subject: data.name,
@@ -254,8 +254,15 @@ export const subjectRouter = createTRPCRouter({
             },
             id: data.id,
           });
- */
 
+          if (!event) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Something went wrong, please try again",
+            });
+          }
+
+          /* 
           const req = await fetch(getBaseUrl() + "/api/jobs/video", {
             method: "POST",
             headers: {
@@ -272,7 +279,7 @@ export const subjectRouter = createTRPCRouter({
               message: res.message,
             });
           }
-
+ */
           return data.id;
         } catch (error) {
           throw new TRPCError({
