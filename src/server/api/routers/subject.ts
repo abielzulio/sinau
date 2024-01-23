@@ -11,6 +11,7 @@ import { subject } from "@/server/db/query";
 import { type Module } from "@/type";
 import { TRPCError } from "@trpc/server";
 import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { getBaseUrl } from "@/utils/api";
 
 const baseMessage = (subject: string): ChatCompletionMessageParam[] => {
   /*   const prompt = `I'm very dumb and didn't know anything about "${subject}" subject yet and now I'm going to learn "${subject}" subject with zero knowledge. I need you to create a learning path for me to learn "${subject}" subject by breaking the "${subject}" subject down into modules as concise and complete as possible from the very basic into the most advanced and should be connected from the beginning to the end.\n\nYou need to really consider deciding what are the best modules that I need to learn gradually and progressively. You can make it concise as possible if needed from 4 modules or make it maximum into 15 modules maximal.\n\nEach modules should containt the module title and the module short overview of what I'm going to learn. Return ONLY an array of object with "title" and "overview" key under "modules" array key with proper capitalization in each object and English grammar.\n\nEach of the module needs to be verbose and concise as much as possible and has a minimum of two words. Do not include any other output. Just the JSON array.`; */
@@ -237,16 +238,31 @@ export const subjectRouter = createTRPCRouter({
       // TODO: Handle if video already exist but the module reading material isn't exist
       if (videosWithNoTranscript.length > 0) {
         try {
-          const event = await trigger.sendEvent({
-            name: "video.transcripter",
-            payload: {
-              subject: data.name,
-              videos: videosWithNoTranscript,
-              userId: ctx.session.user.id,
-            },
+          const payload = {
             id: data.id,
+            subject,
+            videos: videosWithNoTranscript,
+            userId: ctx.session.user.id,
+          };
+
+          const req = await fetch(getBaseUrl() + "/api/jobs/video", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
           });
-          console.log("Trigger.dev sent event", event);
+
+          const res = await req.json();
+
+          if (!req.ok) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: res.message,
+            });
+          }
+
+          return data.id;
         } catch (error) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
