@@ -255,7 +255,6 @@ export const subjectRouter = createTRPCRouter({
             id: data.id,
           });
  */
-          console.log(event);
 
           const req = await fetch(getBaseUrl() + "/api/jobs/video", {
             method: "POST",
