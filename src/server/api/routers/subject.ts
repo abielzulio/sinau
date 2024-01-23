@@ -237,7 +237,7 @@ export const subjectRouter = createTRPCRouter({
       // TODO: Handle if video already exist but the module reading material isn't exist
       if (videosWithNoTranscript.length > 0) {
         try {
-          await trigger.sendEvent({
+          const event = await trigger.sendEvent({
             name: "video.transcripter",
             payload: {
               subject: data.name,
@@ -246,11 +246,12 @@ export const subjectRouter = createTRPCRouter({
             },
             id: data.id,
           });
-        } catch (e) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: (e as Error).message,
-          });
+          console.log("Trigger.dev sent event", event);
+        } catch (error) {
+          console.error(
+            "Trigger.dev sent event error",
+            error instanceof Error ? error.message : JSON.stringify(error),
+          );
         }
       }
 
